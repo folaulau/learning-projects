@@ -105,7 +105,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
         // handler access denied calls
-//        http.exceptionHandling().accessDeniedHandler(customAcccessDeniedHandler);
+        http.exceptionHandling().accessDeniedHandler(customAcccessDeniedHandler);
         
         // @formatter:on
     }

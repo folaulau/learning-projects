@@ -7,10 +7,13 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
+
+import com.lovemesomecoding.pizzaria.exception.ApiException;
 
 public class HttpUtils {
 
@@ -25,6 +28,44 @@ public class HttpUtils {
 		String auth = username + ":" + password;
 		return "Basic " + new String(Base64.getEncoder().encodeToString(auth.getBytes()));
 	}
+	
+	public static String decodeBase64Token(String token) {
+        byte[] decodedBytes = Base64.getDecoder().decode(token);
+        return new String(decodedBytes);
+    }
+	
+	/**
+     * Parse token for username/email
+     */
+    public static String getUsername(String authorizationHeader) {
+        String username = null;
+        try {
+            String usernamePasswordToken = StringUtils.substringAfter(authorizationHeader, " ").trim();
+            // log.debug("usernamePasswordToken: {}",usernamePasswordToken);
+            String rawToken = decodeBase64Token(usernamePasswordToken);
+            username = StringUtils.substringBefore(rawToken, ":");
+        } catch (Exception e) {
+            throw new ApiException("Invalid username");
+        }
+        return username;
+    }
+
+    /**
+     * Parse token for password
+     */
+    public static String getPassword(String authorizationHeader) {
+        String password = null;
+        try {
+            String usernamePasswordToken = StringUtils.substringAfter(authorizationHeader, " ").trim();
+
+            String rawToken = decodeBase64Token(usernamePasswordToken);
+            password = StringUtils.substringAfter(rawToken, ":");
+            return password;
+        } catch (Exception e) {
+            throw new ApiException("Invalid password");
+        }
+
+    }
 
 	public static String getRequestIP(HttpServletRequest request) {
 		String requestorIPAddress = "";

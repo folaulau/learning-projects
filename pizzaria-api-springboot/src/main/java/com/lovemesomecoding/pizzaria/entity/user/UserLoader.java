@@ -36,7 +36,7 @@ public class UserLoader {
         user.setLastName("Kaveinga");
         user.setStatus(UserStatus.ACTIVE);
         user.setDateOfBirth(DateUtils.addDays(new Date(), -30));
-        user.setEmail("folaukaveinga@gmail.com");
+        user.setEmail("folaudev@gmail.com");
         user.setPhoneNumber("3109934731");
         user.setPassword(PasswordUtils.hashPassword("Test1234!"));
         user.setGender(UserGender.MALE);
@@ -63,7 +63,7 @@ public class UserLoader {
         user.setLastName("Kaveinga");
         user.setStatus(UserStatus.ACTIVE);
         user.setDateOfBirth(DateUtils.addDays(new Date(), -30));
-        user.setEmail("lisakaveinga@gmail.com");
+        user.setEmail("folaudev+1@gmail.com");
         user.setPhoneNumber("3109934731");
         user.setPassword(PasswordUtils.hashPassword("Test1234!"));
         user.setGender(UserGender.MALE);
@@ -92,7 +92,7 @@ public class UserLoader {
         user.setLastName("Kaveinga");
         user.setStatus(UserStatus.ACTIVE);
         user.setDateOfBirth(DateUtils.addDays(new Date(), -30));
-        user.setEmail("laulau@gmail.com");
+        user.setEmail("folaudev+2@gmail.com");
         user.setPhoneNumber("3109934731");
         user.setPassword(PasswordUtils.hashPassword("Test1234!"));
         user.setGender(UserGender.MALE);
@@ -123,7 +123,7 @@ public class UserLoader {
         user.setLastName("Kaveinga");
         user.setStatus(UserStatus.ACTIVE);
         user.setDateOfBirth(DateUtils.addDays(new Date(), -30));
-        user.setEmail("kinga@gmail.com");
+        user.setEmail("folaudev+3@gmail.com");
         user.setPhoneNumber("3109934731");
         user.setPassword(PasswordUtils.hashPassword("Test1234!"));
         user.setGender(UserGender.MALE);
@@ -154,7 +154,7 @@ public class UserLoader {
         user.setLastName("Kaveinga");
         user.setStatus(UserStatus.ACTIVE);
         user.setDateOfBirth(DateUtils.addDays(new Date(), -30));
-        user.setEmail("fusi@gmail.com");
+        user.setEmail("folaudev+4@gmail.com");
         user.setPhoneNumber("3109934731");
         user.setPassword(PasswordUtils.hashPassword("Test1234!"));
         user.setGender(UserGender.MALE);
@@ -185,7 +185,7 @@ public class UserLoader {
         user.setLastName("Kaveinga");
         user.setStatus(UserStatus.ACTIVE);
         user.setDateOfBirth(DateUtils.addDays(new Date(), -30));
-        user.setEmail("mele@gmail.com");
+        user.setEmail("folaudev+5@gmail.com");
         user.setPhoneNumber("3109934731");
         user.setPassword(PasswordUtils.hashPassword("Test1234!"));
         user.setGender(UserGender.MALE);
@@ -202,10 +202,6 @@ public class UserLoader {
 
         user.setAddress(address);
         user.addRole(new Role(Authority.ADMIN));
-        
-//        user.addFriend(new User(1));
-//        user.addFriend(new User(2));
-//        user.addFriend(new User(3));
 
         userRepository.saveAndFlush(user);
     }

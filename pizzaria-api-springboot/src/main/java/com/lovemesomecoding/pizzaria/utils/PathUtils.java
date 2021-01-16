@@ -15,7 +15,7 @@ public class PathUtils {
             "/swagger-resources/configuration/security", "/v2/api-docs", "/webjars/**", "/webjars/springfox-swagger-ui/**", "/webjars/springfox-swagger-ui/springfox.css?v=2.8.0-SNAPSHOT",
             "/webjars/springfox-swagger-ui/swagger-ui.css?v=2.8.0-SNAPSHOT"};
 
-    public static final String   LOGIN_URL        = "/login";
-    public static final String   LOGOUT_URL       = "/logout";
+    public static final String   LOGIN_URL        = "/users/login";
+    public static final String   LOGOUT_URL       = "/users/logout";
 
 }

@@ -52,6 +52,16 @@ public class UserRestController {
 
         return new ResponseEntity<>(userAuthenticationSuccessDTO, OK);
     }
+    
+    /**
+     * log in
+     */
+    @ApiOperation(value = "Log In")
+    @PostMapping(value = "/users/login")
+    public ResponseEntity<AuthenticationResponseDTO> login(@RequestHeader(name = "x-api-key", required = true) String xApiKey,@RequestParam(name = "type", required = true) String loginType,@RequestHeader(name = "Authorization", required = true) String authorization) {
+        log.info("login authorization={}", ObjMapperUtils.toJson(authorization));
+        return new ResponseEntity<>(OK);
+    }
 
     @ApiOperation(value = "Get User")
     @GetMapping(value = "/users/{uuid}")

@@ -68,10 +68,6 @@ public class CustomLoginFilter extends AbstractAuthenticationProcessingFilter {
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException, IOException, ServletException {
         log.info("attemptAuthentication ... Method={}", request.getMethod());
 
-        if (request.getMethod().equals("OPTIONS")) {
-            return new UsernamePasswordAuthenticationToken("", "");
-        }
-
         String authorizationHeader = request.getHeader("Authorization");
         log.debug("Login Authorization Header: {}", authorizationHeader);
         if (authorizationHeader == null) {

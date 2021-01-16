@@ -124,6 +124,7 @@ public class User implements Serializable {
     @Column(name = "cover_image_url")
     private String            coverImageUrl;
 
+    @Temporal(TemporalType.DATE)
     @Column(name = "password_expiration_date", nullable = false, updatable = true)
     private Date              passwordExpirationDate;
 
@@ -153,14 +154,19 @@ public class User implements Serializable {
     @Column(name = "updated_at", nullable = false, updatable = true)
     private Date              updatedAt;
 
-    // @JsonIgnoreProperties(value = {"friends"})
-    // @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.DETACH})
-    // @JoinTable(name = "relation", joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
-    // inverseJoinColumns = @JoinColumn(name = "friend_user_id", referencedColumnName = "id"))
-    // private Set<User> friends;
-
     public User(long id) {
         this.id = id;
+    }
+
+    public void addRole(Role role) {
+        if (this.roles == null) {
+            this.roles = new HashSet<>();
+        }
+        this.roles.add(role);
+    }
+
+    public Set<String> generateStrRoles() {
+        return roles.stream().map(role -> role.getAuthority().name()).collect(Collectors.toSet());
     }
 
     @PrePersist
@@ -174,28 +180,5 @@ public class User implements Serializable {
     private void preUpdate() {
 
     }
-
-    public void addRole(Role role) {
-        if (this.roles == null) {
-            this.roles = new HashSet<>();
-        }
-        this.roles.add(role);
-    }
-
-    // public List<String> generateStrRoles() {
-    // List<String> strRoles = roles.stream().map(role -> role.getAuthority().name()).collect(Collectors.toList());
-    // return strRoles;
-    // }
-    
-    public Set<String> generateStrRoles() {
-        return roles.stream().map(role -> role.getAuthority().name()).collect(Collectors.toSet());
-    }
-
-    // public void addFriend(User friend) {
-    // if (this.friends == null) {
-    // this.friends = new HashSet<>();
-    // }
-    // this.friends.add(friend);
-    // }
 
 }
