@@ -11,7 +11,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 import org.springframework.stereotype.Component;
 
-import com.lovemesomecoding.pizzaria.dto.ApiDefaultResponseDTO;
 import com.lovemesomecoding.pizzaria.utils.ObjMapperUtils;
 
 /**
@@ -27,7 +26,7 @@ public class CustomLogoutSuccessHandler implements LogoutSuccessHandler {
     @Override
     public void onLogoutSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
         log.debug("Logout Success");
-        ObjMapperUtils.getObjectMapper().writeValue(response.getWriter(), new ApiDefaultResponseDTO());
+        ObjMapperUtils.getObjectMapper().writeValue(response.getWriter(), new Boolean(true));
     }
 
 }

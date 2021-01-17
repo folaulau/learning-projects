@@ -3,6 +3,7 @@ package com.lovemesomecoding.pizzaria.security;
 import lombok.extern.slf4j.Slf4j;
 
 import org.apache.logging.log4j.ThreadContext;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -10,7 +11,6 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import com.lovemesomecoding.pizzaria.exception.ApiErrorResponse;
 import com.lovemesomecoding.pizzaria.security.jwt.JwtPayload;
 import com.lovemesomecoding.pizzaria.security.jwt.JwtTokenUtils;
-import com.lovemesomecoding.pizzaria.utils.ApiSessionUtils;
 import com.lovemesomecoding.pizzaria.utils.HttpUtils;
 import com.lovemesomecoding.pizzaria.utils.ObjMapperUtils;
 
@@ -28,6 +28,9 @@ import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 @Slf4j
 public class AuthorizationFilter extends OncePerRequestFilter {
 
+    @Autowired
+    private AuthenticationService authenticationService;
+
     /**
      * @author fkaveinga
      */
@@ -41,18 +44,27 @@ public class AuthorizationFilter extends OncePerRequestFilter {
         log.debug("token: {}, ip address", token, clientIpAddress);
         log.debug("url: {}", HttpUtils.getFullURL(request));
 
+        if (token == null || token.length() == 0) {
+            response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+            response.setStatus(UNAUTHORIZED.value());
+
+            String message = "Missing token in header";
+            log.debug("Error message: {}, context path: {}, url: {}", message, request.getContextPath(), request.getRequestURI());
+
+            ObjMapperUtils.getObjectMapper().writeValue(response.getWriter(), new ApiErrorResponse(UNAUTHORIZED, "Access Denied", Collections.singletonList(message)));
+
+            return;
+        }
+
         JwtPayload jwtPayload = JwtTokenUtils.getPayloadByToken(token);
 
-        log.debug("jwtPayload={}", ObjMapperUtils.toJson(jwtPayload));
+        boolean authorized = authenticationService.authorizeRequest(token, jwtPayload);
 
-        if (!validateToken(Optional.ofNullable(token), Optional.ofNullable(jwtPayload), request, response)) {
-            log.warn("token is invalid");
+        if (authorized == false) {
             return;
         }
 
         ThreadContext.put("userUuid", jwtPayload.getSub());
-
-        ApiSessionUtils.setSessionToken(new WebAuthenticationDetailsSource().buildDetails(request), jwtPayload);
 
         // log.debug("token is valid");
 
@@ -62,64 +74,6 @@ public class AuthorizationFilter extends OncePerRequestFilter {
          * Remove memberUuid from the logs as this thread is being terminated.
          */
         ThreadContext.clearMap();
-    }
-
-    private boolean validateToken(Optional<String> optToken, Optional<JwtPayload> optJwtPayload, HttpServletRequest request, HttpServletResponse response) throws IOException {
-        if (!optToken.isPresent() || optToken.get().isEmpty()) {
-            response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-            response.setStatus(UNAUTHORIZED.value());
-
-            String message = "Missing token in header";
-            log.debug("Error message: {}, context path: {}, url: {}", message, request.getContextPath(), request.getRequestURI());
-
-            ObjMapperUtils.getObjectMapper().writeValue(response.getWriter(), new ApiErrorResponse(UNAUTHORIZED, "Access Denied", Collections.singletonList(message)));
-
-            return false;
-        }
-
-        if (!optJwtPayload.isPresent()) {
-            response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-            response.setStatus(UNAUTHORIZED.value());
-
-            String message = "Invalid token in header";
-            log.debug("Error message: {}, context path: {}, url: {}", message, request.getContextPath(), request.getRequestURI());
-
-            ObjMapperUtils.getObjectMapper().writeValue(response.getWriter(), new ApiErrorResponse(UNAUTHORIZED, "Access Denied", Collections.singletonList(message)));
-
-            return false;
-        } else {
-            String userAgent = null;
-
-            try {
-                userAgent = request.getHeader("mobile-agent");
-            } catch (Exception e) {
-                log.error("Exception", e);
-            }
-
-            if (null == userAgent || userAgent.isEmpty()) {
-
-                userAgent = request.getHeader("user-agent");
-            }
-
-            JwtPayload jwtPayload = optJwtPayload.get();
-
-            log.debug("request userAgent={}", userAgent);
-            log.debug("session userAgent={}", jwtPayload.getCud());
-
-            if (userAgent == null || jwtPayload.getCud().equals(userAgent) == false) {
-                response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-                response.setStatus(UNAUTHORIZED.value());
-
-                String message = "Stolen token in header";
-                log.debug("Error message: {}, context path: {}, url: {}", message, request.getContextPath(), request.getRequestURI());
-
-                ObjMapperUtils.getObjectMapper().writeValue(response.getWriter(), new ApiErrorResponse(UNAUTHORIZED, "Access Denied", Collections.singletonList(message)));
-
-                return false;
-            }
-        }
-
-        return true;
     }
 
 }

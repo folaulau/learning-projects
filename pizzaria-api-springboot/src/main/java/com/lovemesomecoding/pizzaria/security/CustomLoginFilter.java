@@ -24,6 +24,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
+import com.lovemesomecoding.pizzaria.cache.CacheService;
 import com.lovemesomecoding.pizzaria.dto.AuthenticationResponseDTO;
 import com.lovemesomecoding.pizzaria.entity.user.User;
 import com.lovemesomecoding.pizzaria.exception.ApiErrorResponse;

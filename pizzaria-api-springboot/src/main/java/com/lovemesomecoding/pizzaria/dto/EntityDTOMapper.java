@@ -8,8 +8,8 @@ import org.mapstruct.MappingTarget;
 import org.mapstruct.Mappings;
 import org.mapstruct.NullValueCheckStrategy;
 import org.mapstruct.ReportingPolicy;
-
 import com.lovemesomecoding.pizzaria.entity.user.User;
+import com.lovemesomecoding.pizzaria.entity.user.session.UserSession;
 
 @Mapper(componentModel = "spring", nullValueCheckStrategy = NullValueCheckStrategy.ALWAYS, unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface EntityDTOMapper {
@@ -24,5 +24,9 @@ public interface EntityDTOMapper {
     UserDTO mapUserToUserDTO(User user);
 
     AuthenticationResponseDTO mapUserToUserAuthSuccessDTO(User user);
+
+    UserSessionDTO mapUserSessionToUserSessionDTO(UserSession userSession);
+
+    List<UserSessionDTO> mapUserSessionsToUserSessionDTOs(List<UserSession> userSessions);
 
 }

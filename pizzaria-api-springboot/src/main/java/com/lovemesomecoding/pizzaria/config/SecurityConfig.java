@@ -22,8 +22,8 @@ import org.springframework.security.web.context.NullSecurityContextRepository;
 import org.springframework.security.web.context.SecurityContextPersistenceFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
-import com.lovemesomecoding.pizzaria.security.CustomAcccessDeniedHandler;
 import com.lovemesomecoding.pizzaria.security.AuthorizationFilter;
+import com.lovemesomecoding.pizzaria.security.CustomAcccessDeniedHandler;
 import com.lovemesomecoding.pizzaria.security.CustomAuthenticationProvider;
 import com.lovemesomecoding.pizzaria.security.CustomLoginFilter;
 import com.lovemesomecoding.pizzaria.security.CustomLogoutHandler;
