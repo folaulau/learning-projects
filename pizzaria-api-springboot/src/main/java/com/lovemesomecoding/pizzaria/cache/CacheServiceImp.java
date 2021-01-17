@@ -7,7 +7,7 @@ import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
-import com.lovemesomecoding.pizzaria.dto.ApiSessionDTO;
+import com.lovemesomecoding.pizzaria.dto.helper.ApiSession;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -33,7 +33,7 @@ public class CacheServiceImp implements CacheService {
     }
 
     @Override
-    public void addUpdate(String token, ApiSessionDTO apiSession) {
+    public void addUpdate(String token, ApiSession apiSession) {
         // log.debug("addUpdate({})", token);
         try {
             this.hashOperations.put(HASH_KEY, token, apiSession);
@@ -49,7 +49,7 @@ public class CacheServiceImp implements CacheService {
      * @return ApiSession
      */
     @Override
-    public Optional<ApiSessionDTO> findApiSessionToken(String token) {
+    public Optional<ApiSession> findApiSessionToken(String token) {
         // log.debug("findApiSessionToken({})", token);
         if (null == this.hashOperations) {
             log.warn("hash is null");
@@ -60,7 +60,7 @@ public class CacheServiceImp implements CacheService {
             return Optional.empty();
         }
         try {
-            return Optional.ofNullable((ApiSessionDTO) hashOperations.get(HASH_KEY, token));
+            return Optional.ofNullable((ApiSession) hashOperations.get(HASH_KEY, token));
         } catch (Exception e) {
             log.warn("token is null ", e);
             return Optional.empty();
@@ -74,7 +74,7 @@ public class CacheServiceImp implements CacheService {
      * @return ApiSession
      */
     @Override
-    public ApiSessionDTO getApiSessionToken(String token) {
+    public ApiSession getApiSessionToken(String token) {
         // log.debug("getApiSessionToken({})", token);
         if (null == this.hashOperations) {
             log.warn("hash is null");
@@ -85,7 +85,7 @@ public class CacheServiceImp implements CacheService {
             return null;
         }
         try {
-            return (ApiSessionDTO) hashOperations.get(HASH_KEY, token);
+            return (ApiSession) hashOperations.get(HASH_KEY, token);
         } catch (Exception e) {
             log.warn("Exception, msg: {}", e.getMessage(), e);
             return null;

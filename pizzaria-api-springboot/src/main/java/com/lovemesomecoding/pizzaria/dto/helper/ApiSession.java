@@ -1,4 +1,4 @@
-package com.lovemesomecoding.pizzaria.dto;
+package com.lovemesomecoding.pizzaria.dto.helper;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -27,7 +27,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class ApiSessionDTO implements Serializable {
+public class ApiSession implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -51,7 +51,7 @@ public class ApiSessionDTO implements Serializable {
 
     private String            clientIPAddress;
 
-    public ApiSessionDTO extendLifeTimeOnRequest() {
+    public ApiSession extendLifeTimeOnRequest() {
         // expire next 24 hours
         this.setExpiredTime(DateUtils.addHours(new Date(), 24));
         return this;

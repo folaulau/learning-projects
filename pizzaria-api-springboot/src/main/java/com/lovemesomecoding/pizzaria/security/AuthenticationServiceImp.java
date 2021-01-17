@@ -8,9 +8,9 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Service;
 
 import com.lovemesomecoding.pizzaria.cache.CacheService;
-import com.lovemesomecoding.pizzaria.dto.ApiSessionDTO;
 import com.lovemesomecoding.pizzaria.dto.AuthenticationResponseDTO;
 import com.lovemesomecoding.pizzaria.dto.EntityDTOMapper;
+import com.lovemesomecoding.pizzaria.dto.helper.ApiSession;
 import com.lovemesomecoding.pizzaria.entity.user.User;
 import com.lovemesomecoding.pizzaria.entity.user.session.UserSession;
 import com.lovemesomecoding.pizzaria.entity.user.session.UserSessionService;
@@ -64,7 +64,7 @@ public class AuthenticationServiceImp implements AuthenticationService {
         AuthenticationResponseDTO authenticatedSessionDTO = entityMapper.mapUserToUserAuthSuccessDTO(user);
         authenticatedSessionDTO.setToken(jwtToken);
 
-        ApiSessionDTO apiSession = new ApiSessionDTO();
+        ApiSession apiSession = new ApiSession();
         apiSession.setToken(jwtToken);
         apiSession.setUserId(user.getId());
         apiSession.setUserUuid(user.getUuid());
@@ -93,7 +93,7 @@ public class AuthenticationServiceImp implements AuthenticationService {
     @Override
     public boolean logOutUser(String token) {
         log.debug("logOutUser, token={}", token);
-        ApiSessionDTO apiSession = cacheService.getApiSessionToken(token);
+        ApiSession apiSession = cacheService.getApiSessionToken(token);
 
         if (apiSession != null) {
             long deleteCount = cacheService.delete(token);
@@ -132,7 +132,7 @@ public class AuthenticationServiceImp implements AuthenticationService {
             return false;
         }
 
-        ApiSessionDTO apiSession = cacheService.getApiSessionToken(token);
+        ApiSession apiSession = cacheService.getApiSessionToken(token);
 
         if (apiSession == null) {
             response.setContentType(MediaType.APPLICATION_JSON_VALUE);

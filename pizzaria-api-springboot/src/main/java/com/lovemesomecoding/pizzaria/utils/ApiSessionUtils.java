@@ -20,7 +20,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetails;
 
-import com.lovemesomecoding.pizzaria.dto.ApiSessionDTO;
+import com.lovemesomecoding.pizzaria.dto.helper.ApiSession;
 
 public interface ApiSessionUtils {
 
@@ -31,7 +31,7 @@ public interface ApiSessionUtils {
     // *
     // * @param sidecarBrokerApiSession
     // */
-    public static void setSessionToken(WebAuthenticationDetails authDetails, ApiSessionDTO apiSession) {
+    public static void setSessionToken(WebAuthenticationDetails authDetails, ApiSession apiSession) {
         List<GrantedAuthority> authorities = new ArrayList<>();
 
         if (apiSession.getUserRoles() != null || apiSession.getUserRoles().isEmpty() == false) {
@@ -47,11 +47,11 @@ public interface ApiSessionUtils {
         SecurityContextHolder.getContext().setAuthentication(updateAuth);
     }
 
-    public static ApiSessionDTO getApiSession() {
+    public static ApiSession getApiSession() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth != null) {
             try {
-                ApiSessionDTO session = (ApiSessionDTO) auth.getPrincipal();
+                ApiSession session = (ApiSession) auth.getPrincipal();
                 return session;
             } catch (Exception e) {
                 log.warn("Exception, msg={}", e.getLocalizedMessage());
@@ -65,7 +65,7 @@ public interface ApiSessionUtils {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth != null) {
             try {
-                ApiSessionDTO session = (ApiSessionDTO) auth.getPrincipal();
+                ApiSession session = (ApiSession) auth.getPrincipal();
                 return session.getUserUuid();
             } catch (Exception e) {
                 log.warn("Exception, msg={}", e.getLocalizedMessage());

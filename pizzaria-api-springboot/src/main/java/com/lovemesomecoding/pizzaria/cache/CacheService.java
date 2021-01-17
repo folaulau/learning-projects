@@ -3,11 +3,11 @@ package com.lovemesomecoding.pizzaria.cache;
 import java.util.Map;
 import java.util.Optional;
 
-import com.lovemesomecoding.pizzaria.dto.ApiSessionDTO;
+import com.lovemesomecoding.pizzaria.dto.helper.ApiSession;
 
 public interface CacheService {
 
-    public void addUpdate(String token, ApiSessionDTO apiSession);
+    public void addUpdate(String token, ApiSession apiSession);
 
     /**
      * might not be there. called at authentication
@@ -15,7 +15,7 @@ public interface CacheService {
      * @param token
      * @return ApiSession
      */
-    public Optional<ApiSessionDTO> findApiSessionToken(String token);
+    public Optional<ApiSession> findApiSessionToken(String token);
 
     /**
      * must be there. called after token has been authenticated
@@ -23,7 +23,7 @@ public interface CacheService {
      * @param token
      * @return ApiSession
      */
-    public ApiSessionDTO getApiSessionToken(String token);
+    public ApiSession getApiSessionToken(String token);
 
     public long delete(String token);
 

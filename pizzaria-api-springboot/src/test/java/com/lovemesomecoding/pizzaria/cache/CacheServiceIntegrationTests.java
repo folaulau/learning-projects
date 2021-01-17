@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Profile;
 
-import com.lovemesomecoding.pizzaria.dto.ApiSessionDTO;
+import com.lovemesomecoding.pizzaria.dto.helper.ApiSession;
 import com.lovemesomecoding.pizzaria.utils.ObjMapperUtils;
 
 import lombok.extern.slf4j.Slf4j;
@@ -29,14 +29,14 @@ public class CacheServiceIntegrationTests {
     @Test
     public void test_addUpdate_failed() {
         String token = "test-token-4e810961-fd73-472a-a8b5-25936d6986d6-nGVHiqSnzo";
-        ApiSessionDTO apiSession = new ApiSessionDTO();
+        ApiSession apiSession = new ApiSession();
         apiSession.setToken(token);
         apiSession.setUserId(1L);
         apiSession.setUserUuid("user-4e810961-fd73-472a-a8b5-25936d6986d6-nGVHiqSnzo");
 
         cacheService.addUpdate(token, apiSession);
 
-        ApiSessionDTO savedApiSession = cacheService.getApiSessionToken(token);
+        ApiSession savedApiSession = cacheService.getApiSessionToken(token);
 
         log.info("savedApiSession={}", ObjMapperUtils.toJson(savedApiSession));
 
