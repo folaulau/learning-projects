@@ -19,7 +19,7 @@ import java.util.Optional;
 @Service
 public class CacheServiceImp implements CacheService {
 
-    private static final String                    HASH_KEY = "springboot-starter-hash-key";
+    private static final String                    HASH_KEY = "pizzaria-api-springboot-hash-key";
 
     @Autowired
     private RedisTemplate<String, Object>          redisTemplate;
