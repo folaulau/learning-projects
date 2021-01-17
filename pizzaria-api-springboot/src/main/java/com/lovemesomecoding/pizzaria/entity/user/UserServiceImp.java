@@ -52,6 +52,7 @@ public class UserServiceImp implements UserService {
         user.setEmail(signUpDTO.getEmail().toLowerCase());
         user.setPasswordExpirationDate(DateUtils.addYears(new Date(), 1));
         user.setPassword(PasswordUtils.hashPassword(user.getPassword()));
+        user.setStatus(UserStatus.ACTIVE);
         user.addRole(new Role(Authority.USER));
 
         user = userDAO.save(user);

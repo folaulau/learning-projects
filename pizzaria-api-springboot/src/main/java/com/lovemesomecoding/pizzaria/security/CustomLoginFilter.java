@@ -4,9 +4,6 @@ import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.Base64;
-import java.util.Date;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -16,9 +13,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.time.DateUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -33,7 +27,6 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import com.lovemesomecoding.pizzaria.dto.AuthenticationResponseDTO;
 import com.lovemesomecoding.pizzaria.entity.user.User;
 import com.lovemesomecoding.pizzaria.exception.ApiErrorResponse;
-import com.lovemesomecoding.pizzaria.exception.ApiException;
 import com.lovemesomecoding.pizzaria.utils.HttpUtils;
 import com.lovemesomecoding.pizzaria.utils.ObjMapperUtils;
 
@@ -69,11 +62,11 @@ public class CustomLoginFilter extends AbstractAuthenticationProcessingFilter {
         log.info("attemptAuthentication ... Method={}", request.getMethod());
         String clientIpAddress = HttpUtils.getRequestIP(request);
         String clientUserAgent = HttpUtils.getRequestUserAgent(request);
-        
+
         log.debug("url: {}", HttpUtils.getFullURL(request));
         log.debug("clientIpAddress: {}", clientIpAddress);
         log.debug("clientUserAgent: {}", clientUserAgent);
-        
+
         String authorizationHeader = request.getHeader("Authorization");
         log.debug("Login Authorization Header: {}", authorizationHeader);
         if (authorizationHeader == null) {
@@ -88,8 +81,8 @@ public class CustomLoginFilter extends AbstractAuthenticationProcessingFilter {
 
         switch (loginType) {
             case "password":
-                String email = getUsername(authorizationHeader);
-                String password = getPassword(authorizationHeader);
+                String email = HttpUtils.getUsername(authorizationHeader);
+                String password = HttpUtils.getPassword(authorizationHeader);
                 log.debug("email: {}", email);
                 log.debug("password: {}", password);
                 if (email == null || email.isEmpty()) {
@@ -102,13 +95,6 @@ public class CustomLoginFilter extends AbstractAuthenticationProcessingFilter {
                     throw new InsufficientAuthenticationException("Password is null");
                 }
                 return authenticateWithPassword(email, password, loginType);
-            case "finger-print":
-                String accessToken = getAccessToken(authorizationHeader);
-                if (accessToken == null || accessToken.isEmpty()) {
-                    log.debug("finger print token is null");
-                    throw new InsufficientAuthenticationException("finger print token is null");
-                }
-                return authenticateWithFingerPrint(accessToken);
 
             default:
                 log.debug("wrong login type {}", loginType);
@@ -120,14 +106,6 @@ public class CustomLoginFilter extends AbstractAuthenticationProcessingFilter {
     private Authentication authenticateWithPassword(String email, String password, String type) {
         UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(email, password);
         authenticationDetails.put("type", type);
-        usernamePasswordAuthenticationToken.setDetails(authenticationDetails);
-        return getAuthenticationManager().authenticate(usernamePasswordAuthenticationToken);
-    }
-
-    private Authentication authenticateWithFingerPrint(String fingerPrint) {
-        log.debug("authenticateWithFingerPrint(..)");
-        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(fingerPrint, fingerPrint);
-        authenticationDetails.put("type", "finger-print");
         usernamePasswordAuthenticationToken.setDetails(authenticationDetails);
         return getAuthenticationManager().authenticate(usernamePasswordAuthenticationToken);
     }
@@ -175,80 +153,6 @@ public class CustomLoginFilter extends AbstractAuthenticationProcessingFilter {
         ObjMapperUtils.getObjectMapper()
                 .writeValue(response.getWriter(),
                         new ApiErrorResponse(BAD_REQUEST, StringUtils.defaultString(message, ApiErrorResponse.DEFAULT_MSG), Arrays.asList(message, "I suggest you take a walk to clear your mind")));
-    }
-
-    /**
-     * Parse token for username
-     * 
-     * @param authorizationHeader
-     * @return String username
-     */
-    private String getUsername(String authorizationHeader) {
-        log.debug("getUsername(..)");
-        String username = null;
-        try {
-            String usernamePasswordToken = StringUtils.substringAfter(authorizationHeader, " ").trim();
-            // log.debug("usernamePasswordToken: {}",usernamePasswordToken);
-            String rawToken = this.decodeBase64Token(usernamePasswordToken);
-            log.debug("rawToken: {}", rawToken);
-            username = StringUtils.substringBefore(rawToken, ":");
-            log.debug("username: {}", username);
-        } catch (Exception e) {
-            throw new ApiException("Invalid username");
-        }
-        return username;
-    }
-
-    /**
-     * Parse token for password
-     * 
-     * @param authorizationHeader
-     * @return String password
-     */
-    private String getPassword(String authorizationHeader) {
-        log.debug("getPassword(..)");
-        String password = null;
-        try {
-            String usernamePasswordToken = StringUtils.substringAfter(authorizationHeader, " ").trim();
-
-            String rawToken = this.decodeBase64Token(usernamePasswordToken);
-            log.debug("rawToken: {}", rawToken);
-            password = StringUtils.substringAfter(rawToken, ":");
-            log.debug("username: {}", password);
-            return password;
-        } catch (Exception e) {
-            throw new ApiException("Invalid password");
-        }
-
-    }
-
-    /**
-     * Parse for access token
-     * 
-     * @param authorizationHeader
-     * @return String access token
-     */
-    private String getAccessToken(String authorizationHeader) {
-        log.debug("getAccessToken(..)");
-        String bearerToken = null;
-        try {
-            bearerToken = StringUtils.substringAfter(authorizationHeader, " ").trim();
-            log.debug("bearerToken: {}", bearerToken);
-        } catch (Exception e) {
-            throw new ApiException("Invalid token");
-        }
-        return bearerToken;
-    }
-
-    /**
-     * Decode authentication token
-     * 
-     * @param usernamePasswordToken
-     * @return String
-     */
-    private String decodeBase64Token(String usernamePasswordToken) {
-        byte[] decodedBytes = Base64.getDecoder().decode(usernamePasswordToken);
-        return new String(decodedBytes);
     }
 
 }

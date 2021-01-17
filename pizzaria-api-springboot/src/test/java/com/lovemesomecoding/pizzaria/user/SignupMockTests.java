@@ -37,7 +37,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @ExtendWith(MockitoExtension.class)
-public class SignupTests {
+public class SignupMockTests {
 
     @InjectMocks
     private UserService           userService = new UserServiceImp();

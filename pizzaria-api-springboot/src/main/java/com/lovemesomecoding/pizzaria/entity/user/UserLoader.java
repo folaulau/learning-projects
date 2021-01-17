@@ -1,5 +1,6 @@
 package com.lovemesomecoding.pizzaria.entity.user;
 
+import java.time.Instant;
 import java.util.Date;
 
 import javax.annotation.PostConstruct;
@@ -20,7 +21,7 @@ import com.lovemesomecoding.pizzaria.utils.PasswordUtils;
  * @author folaukaveinga
  *
  */
-@Profile("local")
+@Profile({"local"})
 @Component(value = "userLoader")
 public class UserLoader {
 
@@ -35,7 +36,7 @@ public class UserLoader {
         user.setFirstName("Folau");
         user.setLastName("Kaveinga");
         user.setStatus(UserStatus.ACTIVE);
-        user.setDateOfBirth(DateUtils.addDays(new Date(), -30));
+        user.setDateOfBirth(Date.from(Instant.parse("1986-08-15T07:00:00.00Z")));
         user.setEmail("folaudev@gmail.com");
         user.setPhoneNumber("3109934731");
         user.setPassword(PasswordUtils.hashPassword("Test1234!"));
@@ -52,7 +53,13 @@ public class UserLoader {
         address.setZipcode("84043");
 
         user.setAddress(address);
-        user.addRole(new Role(Authority.USER));
+     
+        
+        Role USER_ROLE = new Role(1L, Authority.USER);
+        Role AMDIN_ROLE = new Role(2L, Authority.ADMIN);
+        
+        user.addRole(USER_ROLE);
+        user.addRole(AMDIN_ROLE);
 
         userRepository.saveAndFlush(user);
 
@@ -62,7 +69,7 @@ public class UserLoader {
         user.setFirstName("Lisa");
         user.setLastName("Kaveinga");
         user.setStatus(UserStatus.ACTIVE);
-        user.setDateOfBirth(DateUtils.addDays(new Date(), -30));
+        user.setDateOfBirth(Date.from(Instant.parse("1987-08-15T07:00:00.00Z")));
         user.setEmail("folaudev+1@gmail.com");
         user.setPhoneNumber("3109934731");
         user.setPassword(PasswordUtils.hashPassword("Test1234!"));
@@ -70,7 +77,7 @@ public class UserLoader {
         user.setPasswordExpirationDate(DateUtils.addMonths(new Date(), 12));
         user.setMaritalStatus(UserMaritalStatus.MARRIED);
         user.setAboutMe("I am so cool you dont even know");
-        
+
         address = new Address();
         address.setCity("Lehi");
         address.setId(2L);
@@ -79,19 +86,17 @@ public class UserLoader {
         address.setZipcode("84043");
 
         user.setAddress(address);
-        user.addRole(new Role(Authority.ADMIN));
-        
-//        user.addFriend(new User(1));
+        user.addRole(AMDIN_ROLE);
 
         userRepository.saveAndFlush(user);
-        
+
         user = new User();
         user.setId(3L);
         user.setUuid("user-22cdbbdd-75ed-44e3-8007-db8b7b8c3832");
         user.setFirstName("Laulau");
         user.setLastName("Kaveinga");
         user.setStatus(UserStatus.ACTIVE);
-        user.setDateOfBirth(DateUtils.addDays(new Date(), -30));
+        user.setDateOfBirth(Date.from(Instant.parse("2011-08-15T07:00:00.00Z")));
         user.setEmail("folaudev+2@gmail.com");
         user.setPhoneNumber("3109934731");
         user.setPassword(PasswordUtils.hashPassword("Test1234!"));
@@ -99,7 +104,7 @@ public class UserLoader {
         user.setPasswordExpirationDate(DateUtils.addMonths(new Date(), 12));
         user.setMaritalStatus(UserMaritalStatus.SINGLE);
         user.setAboutMe("I am so cool you dont even know");
-        
+
         address = new Address();
         address.setCity("Lehi");
         address.setId(3L);
@@ -108,21 +113,17 @@ public class UserLoader {
         address.setZipcode("84043");
 
         user.setAddress(address);
-        user.addRole(new Role(Authority.ADMIN));
-        
-//        user.addFriend(new User(1));
-//        user.addFriend(new User(2));
+        user.addRole(USER_ROLE);
 
         userRepository.saveAndFlush(user);
-        
-        
+
         user = new User();
         user.setId(4L);
         user.setUuid("user-22cdbbdd-75ed-44e3-8007-db8b7b8c3831");
         user.setFirstName("Kinga");
         user.setLastName("Kaveinga");
         user.setStatus(UserStatus.ACTIVE);
-        user.setDateOfBirth(DateUtils.addDays(new Date(), -30));
+        user.setDateOfBirth(Date.from(Instant.parse("2013-08-15T07:00:00.00Z")));
         user.setEmail("folaudev+3@gmail.com");
         user.setPhoneNumber("3109934731");
         user.setPassword(PasswordUtils.hashPassword("Test1234!"));
@@ -130,7 +131,7 @@ public class UserLoader {
         user.setPasswordExpirationDate(DateUtils.addMonths(new Date(), 12));
         user.setMaritalStatus(UserMaritalStatus.SINGLE);
         user.setAboutMe("I am so cool you dont even know");
-        
+
         address = new Address();
         address.setCity("Lehi");
         address.setId(4L);
@@ -139,29 +140,26 @@ public class UserLoader {
         address.setZipcode("84043");
 
         user.setAddress(address);
-        user.addRole(new Role(Authority.ADMIN));
-        
-//        user.addFriend(new User(1));
-//        user.addFriend(new User(2));
-//        user.addFriend(new User(3));
+        user.addRole(USER_ROLE);
+        user.addRole(AMDIN_ROLE);
 
         userRepository.saveAndFlush(user);
-        
+
         user = new User();
         user.setId(5L);
         user.setUuid("user-22cdbbdd-75ed-44e3-8007-db8b7b8c3839");
         user.setFirstName("Fusi");
         user.setLastName("Kaveinga");
         user.setStatus(UserStatus.ACTIVE);
-        user.setDateOfBirth(DateUtils.addDays(new Date(), -30));
+        user.setDateOfBirth(Date.from(Instant.parse("2015-08-15T07:00:00.00Z")));
         user.setEmail("folaudev+4@gmail.com");
         user.setPhoneNumber("3109934731");
         user.setPassword(PasswordUtils.hashPassword("Test1234!"));
-        user.setGender(UserGender.MALE);
+        user.setGender(UserGender.FEMALE);
         user.setPasswordExpirationDate(DateUtils.addMonths(new Date(), 12));
         user.setMaritalStatus(UserMaritalStatus.SINGLE);
         user.setAboutMe("I am so cool you dont even know");
-        
+
         address = new Address();
         address.setCity("Lehi");
         address.setId(5L);
@@ -170,11 +168,7 @@ public class UserLoader {
         address.setZipcode("84043");
 
         user.setAddress(address);
-        user.addRole(new Role(Authority.ADMIN));
-        
-//        user.addFriend(new User(1));
-//        user.addFriend(new User(2));
-//        user.addFriend(new User(3));
+        user.addRole(USER_ROLE);
 
         userRepository.saveAndFlush(user);
 
@@ -184,15 +178,15 @@ public class UserLoader {
         user.setFirstName("Mele");
         user.setLastName("Kaveinga");
         user.setStatus(UserStatus.ACTIVE);
-        user.setDateOfBirth(DateUtils.addDays(new Date(), -30));
+        user.setDateOfBirth(Date.from(Instant.parse("2020-08-15T07:00:00.00Z")));
         user.setEmail("folaudev+5@gmail.com");
         user.setPhoneNumber("3109934731");
         user.setPassword(PasswordUtils.hashPassword("Test1234!"));
-        user.setGender(UserGender.MALE);
+        user.setGender(UserGender.FEMALE);
         user.setPasswordExpirationDate(DateUtils.addMonths(new Date(), 12));
         user.setMaritalStatus(UserMaritalStatus.SINGLE);
         user.setAboutMe("I am so cool you dont even know");
-        
+
         address = new Address();
         address.setCity("Lehi");
         address.setId(6L);
@@ -201,7 +195,7 @@ public class UserLoader {
         address.setZipcode("84043");
 
         user.setAddress(address);
-        user.addRole(new Role(Authority.ADMIN));
+        user.addRole(AMDIN_ROLE);
 
         userRepository.saveAndFlush(user);
     }

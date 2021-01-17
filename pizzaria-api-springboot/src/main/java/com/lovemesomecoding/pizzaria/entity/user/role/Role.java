@@ -70,6 +70,11 @@ public class Role implements Serializable {
     private Date              updatedAt;
 
     public Role(Authority authority) {
+        this(null, authority);
+    }
+
+    public Role(Long id, Authority authority) {
+        this.id = id;
         this.authority = authority;
     }
 

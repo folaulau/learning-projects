@@ -1,13 +1,6 @@
 package com.lovemesomecoding.pizzaria.security;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -15,8 +8,6 @@ import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
@@ -64,8 +55,9 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
     }
 
     private Authentication loginAdminWithPassword(String email, String password) {
+        log.debug("loginAdminWithPassword({})", email);
         User user = null;
-        UsernamePasswordAuthenticationToken userAuthToken = new UsernamePasswordAuthenticationToken(user.getEmail(), password, generateAuthorities(user.generateStrRoles()));
+        UsernamePasswordAuthenticationToken userAuthToken = new UsernamePasswordAuthenticationToken(user.getEmail(), password);
         userAuthToken.setDetails(user);
         return userAuthToken;
     }
@@ -76,14 +68,14 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
 
         if (user == null) {
             log.debug("user not found");
-            throw new UsernameNotFoundException("Oops! Your email or password is incorrect.");
+            throw new UsernameNotFoundException("Email or password is invalid");
         }
 
         log.debug("member found for {}", email);
 
         if (user.getPassword() == null || !PasswordUtils.verify(password, user.getPassword())) {
-            log.debug("login credentials not matched");
-            throw new BadCredentialsException("Oops! Your email or password is incorrect.");
+            log.debug("Password is invalid");
+            throw new BadCredentialsException("Email or password is invalid");
         }
 
         if (UserStatus.isActive(user.getStatus()) == false) {
@@ -91,40 +83,10 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
             throw new DisabledException("Your account has beeen deactivated");
         }
 
-        UsernamePasswordAuthenticationToken userAuthToken = new UsernamePasswordAuthenticationToken(user.getEmail(), user.getPassword(), generateAuthorities(user.generateStrRoles()));
+        UsernamePasswordAuthenticationToken userAuthToken = new UsernamePasswordAuthenticationToken(user.getEmail(), user.getPassword());
         userAuthToken.setDetails(user);
 
         return userAuthToken;
-    }
-
-    // private Authentication loginWithFingerPrint(String fingerPrint) {
-    // log.debug("loginWithFingerPrint({})", fingerPrint);
-    // Member member = fingerPrintTokenService.getUserByToken(fingerPrint);
-    //
-    // if (member != null) {
-    // fingerPrintTokenService.remove(fingerPrint);
-    // return new UsernamePasswordAuthenticationToken(member.getEmail(), member.getPassword(),
-    // generateAuthorities(member.generateStrRoles()));
-    // }
-    //
-    // throw new BadCredentialsException("Invalid finger print token");
-    //
-    // }
-
-    /**
-     * Get Authorities for User
-     * 
-     * @param user
-     * @return List<GrantedAuthority>
-     */
-    private List<GrantedAuthority> generateAuthorities(Set<String> roles) {
-        List<GrantedAuthority> authorities = new ArrayList<>();
-
-        for (String role : roles) {
-            authorities.add(new SimpleGrantedAuthority("ROLE_" + role.toUpperCase()));
-        }
-
-        return authorities;
     }
 
     @Override
