@@ -67,7 +67,13 @@ public class CustomLoginFilter extends AbstractAuthenticationProcessingFilter {
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException, IOException, ServletException {
         log.info("attemptAuthentication ... Method={}", request.getMethod());
-
+        String clientIpAddress = HttpUtils.getRequestIP(request);
+        String clientUserAgent = HttpUtils.getRequestUserAgent(request);
+        
+        log.debug("url: {}", HttpUtils.getFullURL(request));
+        log.debug("clientIpAddress: {}", clientIpAddress);
+        log.debug("clientUserAgent: {}", clientUserAgent);
+        
         String authorizationHeader = request.getHeader("Authorization");
         log.debug("Login Authorization Header: {}", authorizationHeader);
         if (authorizationHeader == null) {
@@ -135,8 +141,6 @@ public class CustomLoginFilter extends AbstractAuthenticationProcessingFilter {
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
         log.debug("successfulAuthentication(...), METHOD={}", request.getMethod());
-        String clientIpAddress = HttpUtils.getRequestIP(request);
-        String clientUserAgent = HttpUtils.getRequestUserAgent(request);
 
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setStatus(HttpStatus.OK.value());
