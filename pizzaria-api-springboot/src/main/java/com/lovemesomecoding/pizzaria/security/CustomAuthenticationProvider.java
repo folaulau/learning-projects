@@ -78,7 +78,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
         int invalidPasswordCounter = Optional.ofNullable(user.getInvalidPasswordCounter()).orElse(0);
 
         if (user.getPassword() == null || !PasswordUtils.verify(password, user.getPassword())) {
-            log.debug("Password is invalid");
+            log.debug("Password={} is invalid", password);
 
             user.setInvalidPasswordCounter(invalidPasswordCounter + 1);
             this.userDAO.save(user);
