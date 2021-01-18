@@ -21,6 +21,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetails;
 
 import com.lovemesomecoding.pizzaria.dto.helper.ApiSession;
+import com.lovemesomecoding.pizzaria.entity.user.User;
+import com.lovemesomecoding.pizzaria.security.jwt.JwtPayload;
+import com.lovemesomecoding.pizzaria.security.jwt.JwtTokenUtils;
 
 public interface ApiSessionUtils {
 
@@ -32,6 +35,11 @@ public interface ApiSessionUtils {
     // * @param sidecarBrokerApiSession
     // */
     public static void setSessionToken(WebAuthenticationDetails authDetails, ApiSession apiSession) {
+
+        if (apiSession == null) {
+            return;
+        }
+
         List<GrantedAuthority> authorities = new ArrayList<>();
 
         if (apiSession.getUserRoles() != null || apiSession.getUserRoles().isEmpty() == false) {
@@ -42,9 +50,15 @@ public interface ApiSessionUtils {
 
         UsernamePasswordAuthenticationToken updateAuth = new UsernamePasswordAuthenticationToken(apiSession, apiSession.getUserUuid(), authorities);
 
-        updateAuth.setDetails(authDetails);
+        if (authDetails != null) {
+            updateAuth.setDetails(authDetails);
+        }
 
         SecurityContextHolder.getContext().setAuthentication(updateAuth);
+    }
+
+    public static void setSessionToken(ApiSession apiSession) {
+        setSessionToken(null, apiSession);
     }
 
     public static ApiSession getApiSession() {
@@ -84,4 +98,27 @@ public interface ApiSessionUtils {
         return env;
     }
 
+    public static long getUserId() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth != null) {
+            try {
+                ApiSession session = (ApiSession) auth.getPrincipal();
+                return session.getUserId();
+            } catch (Exception e) {
+                log.warn("Exception, msg={}", e.getLocalizedMessage());
+            }
+
+        }
+        return 0;
+    }
+
+    public static User getUser(Long userId) {
+        // TODO Auto-generated method stub
+        return new User(userId);
+    }
+
+    public static User getUser() {
+        // TODO Auto-generated method stub
+        return new User(getUserId());
+    }
 }

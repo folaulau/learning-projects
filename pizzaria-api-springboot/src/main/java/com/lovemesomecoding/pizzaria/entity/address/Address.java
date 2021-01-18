@@ -1,6 +1,8 @@
 package com.lovemesomecoding.pizzaria.entity.address;
 
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 import javax.persistence.Column;
@@ -79,4 +81,34 @@ public class Address implements Serializable {
 
     }
 
+    public Map<String, Object> getPaymentGatewayAddress() {
+        Map<String, Object> add = new HashMap<>();
+        if (street != null && street.length() > 0) {
+            add.put("line1", street);
+        } else {
+            return null;
+        }
+
+        if (street2 != null && street2.length() > 0) {
+            add.put("line2", street2);
+        }
+
+        if (city != null && city.length() > 0) {
+            add.put("city", city);
+        }
+
+        if (country != null && country.length() > 0) {
+            add.put("country", country);
+        }
+
+        if (zipcode != null && zipcode.length() > 0) {
+            add.put("postal_code", zipcode);
+        }
+
+        if (state != null && state.length() > 0) {
+            add.put("state", state);
+        }
+
+        return add;
+    }
 }

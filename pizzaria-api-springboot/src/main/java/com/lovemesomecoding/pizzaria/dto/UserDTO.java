@@ -71,5 +71,6 @@ public class UserDTO implements Serializable {
 
     private Long              updatedBy;
 
+    private String            paymentGatewayId;
 
 }

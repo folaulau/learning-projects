@@ -124,6 +124,9 @@ public class User implements Serializable {
     @Column(name = "cover_image_url")
     private String            coverImageUrl;
 
+    @Column(name = "payment_gateway_id")
+    private String            paymentGatewayId;
+
     @Temporal(TemporalType.DATE)
     @Column(name = "password_expiration_date", nullable = false, updatable = true)
     private Date              passwordExpirationDate;
@@ -167,6 +170,11 @@ public class User implements Serializable {
 
     public Set<String> generateStrRoles() {
         return roles.stream().map(role -> role.getAuthority().name()).collect(Collectors.toSet());
+    }
+
+    public String getName() {
+        // TODO Auto-generated method stub
+        return this.firstName + " " + this.lastName;
     }
 
     @PrePersist

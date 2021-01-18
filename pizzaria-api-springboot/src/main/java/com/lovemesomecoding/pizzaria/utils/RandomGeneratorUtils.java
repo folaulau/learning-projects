@@ -92,7 +92,11 @@ public final class RandomGeneratorUtils {
 
     public static String getAwsS3FileKey(String fileName) {
         // TODO Auto-generated method stub
-        return UUID.randomUUID().toString()+"-"+fileName;
+        return UUID.randomUUID().toString() + "-" + fileName;
+    }
+
+    public static String getS3FileKey(String name) {
+        return RandomStringUtils.randomAlphabetic(30) + "_" + name;
     }
 
 }

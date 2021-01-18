@@ -54,12 +54,8 @@ public class UserLoader {
 
         user.setAddress(address);
      
-        
-        Role USER_ROLE = new Role(1L, Authority.USER);
-        Role AMDIN_ROLE = new Role(2L, Authority.ADMIN);
-        
-        user.addRole(USER_ROLE);
-        user.addRole(AMDIN_ROLE);
+        user.addRole(new Role( Authority.USER));
+        user.addRole(new Role( Authority.ADMIN));
 
         userRepository.saveAndFlush(user);
 
@@ -86,7 +82,7 @@ public class UserLoader {
         address.setZipcode("84043");
 
         user.setAddress(address);
-        user.addRole(AMDIN_ROLE);
+        user.addRole(new Role( Authority.USER));
 
         userRepository.saveAndFlush(user);
 
@@ -113,7 +109,7 @@ public class UserLoader {
         address.setZipcode("84043");
 
         user.setAddress(address);
-        user.addRole(USER_ROLE);
+        user.addRole(new Role( Authority.ADMIN));
 
         userRepository.saveAndFlush(user);
 
@@ -140,8 +136,8 @@ public class UserLoader {
         address.setZipcode("84043");
 
         user.setAddress(address);
-        user.addRole(USER_ROLE);
-        user.addRole(AMDIN_ROLE);
+        user.addRole(new Role( Authority.USER));
+        user.addRole(new Role( Authority.ADMIN));
 
         userRepository.saveAndFlush(user);
 
@@ -168,7 +164,7 @@ public class UserLoader {
         address.setZipcode("84043");
 
         user.setAddress(address);
-        user.addRole(USER_ROLE);
+        user.addRole(new Role( Authority.USER));
 
         userRepository.saveAndFlush(user);
 
@@ -195,7 +191,7 @@ public class UserLoader {
         address.setZipcode("84043");
 
         user.setAddress(address);
-        user.addRole(AMDIN_ROLE);
+        user.addRole(new Role( Authority.ADMIN));
 
         userRepository.saveAndFlush(user);
     }

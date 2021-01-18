@@ -14,7 +14,7 @@ $(document).ready(function(){
         console.log("authorization - Basic "+authorization);
         
         $.ajax({
-            url: 'http:/localhost:8888/api/users/login?type=password',
+            url: HOST+'/users/login?type=password',
             type: 'post',
             data: {
                 
@@ -23,21 +23,21 @@ $(document).ready(function(){
                 "Authorization": "Basic "+authorization,  
                 "x-api-key": 'Header Value Two'
             },
-            contentType: "application/json",
-            fail: function( jqXHR, textStatus, errorThrown ) {
-                console.log( 'Could not get posts, server response: ' + textStatus + ': ' + errorThrown );
-            }
-        }).then(function(data, status) {
+            contentType: "application/json"
+        })
+        .then(function(data) {
             console.log("data");
             console.log(data);
-            console.log("status");
-            console.log(status);
+            addTokenToLocalStorage(data.token, data);
+            console.log("token="+getTokenFromLocalStorage());
+            console.log("userUuuid="+getUserUuidFromLocalStorage());
+            window.location.href = "/";
+        })
+        .catch(function(jqXHR){
+            console.log(jqXHR);
+            var data = jQuery.parseJSON(jqXHR.responseText);
+            console.log(data.message);
+            console.log(jqXHR.status);
         });
-        // .catch(function(data, status){
-        //     console.log("data");
-        //     console.log(data);
-        //     console.log("status");
-        //     console.log(status);
-        // });
     });
 });
