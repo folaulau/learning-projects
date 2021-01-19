@@ -43,18 +43,6 @@ public class LoginIntegrationTests {
 
     @Autowired
     private MockMvc mockMvc;
-    
-    @Resource
-    private WebApplicationContext webApplicationContext;
-    
-    @Autowired
-    private Filter                springSecurityFilterChain;
-    
-    @BeforeEach
-    public void setup() {
-        mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).addFilters(springSecurityFilterChain).build();
-
-    }
 
     @Test
     public void test_login_with_invalid_email() throws Exception {

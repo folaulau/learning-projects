@@ -43,22 +43,11 @@ import lombok.extern.slf4j.Slf4j;
 @Profile("local")
 @Slf4j
 @SpringBootTest
-//@AutoConfigureMockMvc
+@AutoConfigureMockMvc
 public class SignupIntegrationTests {
 
-    private MockMvc mockMvc;
-    
-    @Resource
-    private WebApplicationContext webApplicationContext;
-    
     @Autowired
-    private Filter                springSecurityFilterChain;
-    
-    @BeforeEach
-    public void setup() {
-        mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).addFilters(springSecurityFilterChain).build();
-
-    }
+    private MockMvc mockMvc;
 
     @Test
     public void test_signup_with_invalid_email() throws Exception {
