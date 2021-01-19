@@ -10,7 +10,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.lovemesomecoding.pizzaria.exception.ApiErrorResponse;
 import com.lovemesomecoding.pizzaria.security.jwt.JwtPayload;
-import com.lovemesomecoding.pizzaria.security.jwt.JwtTokenUtils;
+import com.lovemesomecoding.pizzaria.security.jwt.JwtTokenService;
 import com.lovemesomecoding.pizzaria.utils.HttpUtils;
 import com.lovemesomecoding.pizzaria.utils.ObjMapperUtils;
 
@@ -30,6 +30,9 @@ public class AuthorizationFilter extends OncePerRequestFilter {
 
     @Autowired
     private AuthenticationService authenticationService;
+    
+    @Autowired
+    private JwtTokenService jwtTokenService;
 
     /**
      * @author fkaveinga
@@ -56,7 +59,7 @@ public class AuthorizationFilter extends OncePerRequestFilter {
             return;
         }
 
-        JwtPayload jwtPayload = JwtTokenUtils.getPayloadByToken(token);
+        JwtPayload jwtPayload = jwtTokenService.getPayloadByToken(token);
 
         boolean authorized = authenticationService.authorizeRequest(token, jwtPayload);
 

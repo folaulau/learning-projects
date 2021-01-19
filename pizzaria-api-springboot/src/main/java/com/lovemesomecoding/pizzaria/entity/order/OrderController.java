@@ -42,7 +42,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 
-@Api(value = "orders", produces = "Rest API for order operations", tags = "Order Controller")
+@Api(value = "orders", tags = "Orders")
 @RestController
 @RequestMapping("/orders")
 public class OrderController {

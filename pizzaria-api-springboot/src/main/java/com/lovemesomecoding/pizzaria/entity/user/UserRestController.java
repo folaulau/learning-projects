@@ -24,7 +24,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-
 import com.lovemesomecoding.pizzaria.dto.AuthenticationResponseDTO;
 import com.lovemesomecoding.pizzaria.dto.CustomPage;
 import com.lovemesomecoding.pizzaria.dto.EntityDTOMapper;
@@ -34,6 +33,7 @@ import com.lovemesomecoding.pizzaria.dto.UserSessionDTO;
 import com.lovemesomecoding.pizzaria.dto.UserUpdateDTO;
 import com.lovemesomecoding.pizzaria.entity.user.session.UserSession;
 import com.lovemesomecoding.pizzaria.entity.user.session.UserSessionService;
+import com.lovemesomecoding.pizzaria.exception.ApiException;
 import com.lovemesomecoding.pizzaria.utils.ObjMapperUtils;
 
 import io.swagger.annotations.Api;
@@ -88,6 +88,10 @@ public class UserRestController {
         UserDTO userDTO = userService.getByUuid(uuid);
 
         log.info("userDTO={}", ObjMapperUtils.toJson(userDTO));
+
+        if (userDTO == null) {
+            throw new ApiException("User not found", "User not found by uuid=" + uuid);
+        }
 
         return new ResponseEntity<>(userDTO, OK);
     }

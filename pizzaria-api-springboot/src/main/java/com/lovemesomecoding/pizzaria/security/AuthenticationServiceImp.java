@@ -16,7 +16,7 @@ import com.lovemesomecoding.pizzaria.entity.user.session.UserSession;
 import com.lovemesomecoding.pizzaria.entity.user.session.UserSessionService;
 import com.lovemesomecoding.pizzaria.exception.ApiErrorResponse;
 import com.lovemesomecoding.pizzaria.security.jwt.JwtPayload;
-import com.lovemesomecoding.pizzaria.security.jwt.JwtTokenUtils;
+import com.lovemesomecoding.pizzaria.security.jwt.JwtTokenService;
 import com.lovemesomecoding.pizzaria.utils.ApiSessionUtils;
 import com.lovemesomecoding.pizzaria.utils.HttpUtils;
 import com.lovemesomecoding.pizzaria.utils.ObjMapperUtils;
@@ -49,6 +49,9 @@ public class AuthenticationServiceImp implements AuthenticationService {
 
     @Autowired
     private CacheService        cacheService;
+    
+    @Autowired
+    private JwtTokenService jwtTokenService;
 
     @Autowired
     private UserSessionService  userSessionService;
@@ -59,7 +62,7 @@ public class AuthenticationServiceImp implements AuthenticationService {
         String userAgent = HttpUtils.getRequestUserAgent(request);
         String userIPAddress = HttpUtils.getRequestIP(request);
 
-        String jwtToken = JwtTokenUtils.generateToken(new JwtPayload(RandomGeneratorUtils.getJWTId(), user.getUuid()));
+        String jwtToken = jwtTokenService.generateToken(new JwtPayload(RandomGeneratorUtils.getJWTId(), user.getUuid()));
 
         AuthenticationResponseDTO authenticatedSessionDTO = entityMapper.mapUserToUserAuthSuccessDTO(user);
         authenticatedSessionDTO.setToken(jwtToken);

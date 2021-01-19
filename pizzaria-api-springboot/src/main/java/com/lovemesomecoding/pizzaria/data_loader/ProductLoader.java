@@ -1,17 +1,21 @@
-package com.lovemesomecoding.pizzaria.entity.product;
+package com.lovemesomecoding.pizzaria.data_loader;
 
 import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
+import com.lovemesomecoding.pizzaria.entity.product.Product;
+import com.lovemesomecoding.pizzaria.entity.product.ProductCategory;
+import com.lovemesomecoding.pizzaria.entity.product.ProductRepository;
+import com.lovemesomecoding.pizzaria.entity.product.ProductType;
 import com.lovemesomecoding.pizzaria.entity.product.deal.Deal;
 import com.lovemesomecoding.pizzaria.entity.product.deal.DealRepository;
 
 @Profile({"local"})
-@Component(value = "productLoader")
-public class ProductLoader {
+public class ProductLoader implements CommandLineRunner{
 
     @Autowired
     private ProductRepository productRepository;
@@ -19,8 +23,8 @@ public class ProductLoader {
     @Autowired
     private DealRepository    dealRepository;
 
-    @PostConstruct
-    public void init() {
+    @Override
+    public void run(String... args) throws Exception {
         loadPizza();
 
         loadChickend();
@@ -28,7 +32,6 @@ public class ProductLoader {
         loadDrink();
 
         loadDeals();
-
     }
 
     private void loadPizza() {
@@ -234,5 +237,7 @@ public class ProductLoader {
         deal.addProduct(new Product(6L));
         dealRepository.saveAndFlush(deal);
     }
+
+
 
 }

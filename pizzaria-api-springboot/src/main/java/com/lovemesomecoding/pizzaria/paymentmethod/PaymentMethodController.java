@@ -38,7 +38,7 @@ import io.swagger.annotations.ApiParam;
  * @author fkaveinga
  *
  */
-@Api(value = "paymentmethods", produces = "Rest API for PaymentMethod operations", tags = "PaymentMethod Controller")
+@Api(value = "paymentmethods", tags = "PaymentMethods")
 @RestController
 @RequestMapping("/paymentmethods")
 public class PaymentMethodController {

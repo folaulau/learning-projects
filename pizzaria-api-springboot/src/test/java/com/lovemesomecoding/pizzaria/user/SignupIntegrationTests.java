@@ -10,8 +10,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.util.UUID;
 
+import javax.annotation.Resource;
+import javax.servlet.Filter;
+
 import org.hamcrest.CoreMatchers;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +30,8 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
 
 import com.lovemesomecoding.pizzaria.dto.SignUpDTO;
 import com.lovemesomecoding.pizzaria.exception.ApiException;
@@ -37,11 +43,22 @@ import lombok.extern.slf4j.Slf4j;
 @Profile("local")
 @Slf4j
 @SpringBootTest
-@AutoConfigureMockMvc
+//@AutoConfigureMockMvc
 public class SignupIntegrationTests {
 
-    @Autowired
     private MockMvc mockMvc;
+    
+    @Resource
+    private WebApplicationContext webApplicationContext;
+    
+    @Autowired
+    private Filter                springSecurityFilterChain;
+    
+    @BeforeEach
+    public void setup() {
+        mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).addFilters(springSecurityFilterChain).build();
+
+    }
 
     @Test
     public void test_signup_with_invalid_email() throws Exception {

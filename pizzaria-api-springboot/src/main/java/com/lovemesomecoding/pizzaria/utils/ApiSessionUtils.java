@@ -23,7 +23,7 @@ import org.springframework.security.web.authentication.WebAuthenticationDetails;
 import com.lovemesomecoding.pizzaria.dto.helper.ApiSession;
 import com.lovemesomecoding.pizzaria.entity.user.User;
 import com.lovemesomecoding.pizzaria.security.jwt.JwtPayload;
-import com.lovemesomecoding.pizzaria.security.jwt.JwtTokenUtils;
+import com.lovemesomecoding.pizzaria.security.jwt.JwtTokenService;
 
 public interface ApiSessionUtils {
 
