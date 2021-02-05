@@ -1,17 +1,11 @@
 package com.lovemesomecoding.pizzaria.dto;
 
 import java.io.Serializable;
-import java.util.Date;
-
-import javax.persistence.Column;
-
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.lovemesomecoding.pizzaria.entity.user.UserGender;
+import com.lovemesomecoding.pizzaria.security.AuthenticationType;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -28,10 +22,18 @@ public class SignUpDTO implements Serializable {
     /**
      * 
      */
-    private static final long serialVersionUID = 1L;
+    private static final long  serialVersionUID = 1L;
 
-    private String     email;
+    private AuthenticationType type;
 
-    private String     password;
+    private String             email;
+
+    private String             password;
+
+    /**
+     * Third party code
+     */
+
+    private String             thirdPartyAuthCode;
 
 }

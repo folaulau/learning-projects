@@ -1,5 +1,6 @@
 package com.lovemesomecoding.pizzaria.dto;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.Set;
 
@@ -8,149 +9,44 @@ import javax.persistence.Column;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+
+@Setter
+@Getter
+@ToString
+@AllArgsConstructor
+@NoArgsConstructor
 @JsonInclude(value = Include.NON_NULL)
 public class OrderReadDTO {
 
-	private Long id;
-	
-	private String uid;
+    private Long             id;
 
-	private Set<LineItemDTO> lineItems;
+    private String           uid;
 
-	private int totalItemCount;
+    private Set<LineItemDTO> lineItems;
 
-	private double total;
+    private int              totalItemCount;
 
-	private AddressDTO location;
+    private double           total;
 
-	private boolean delivered;
+    private AddressDTO       location;
 
-	private Date deliveredAt;
+    private boolean          delivered;
 
-	private Date createdAt;
+    private LocalDateTime    deliveredAt;
 
-	private Date updatedAt;
+    private LocalDateTime    createdAt;
 
-	private PaymentReadDTO payment;
+    private LocalDateTime    updatedAt;
 
-	private boolean paid;
+    private PaymentReadDTO   payment;
 
-	private Date paidAt;
+    private boolean          paid;
 
-	public OrderReadDTO() {
-		super();
-		// TODO Auto-generated constructor stub
-	}
+    private LocalDateTime    paidAt;
 
-	public Set<LineItemDTO> getLineItems() {
-		return lineItems;
-	}
-
-	public void setLineItems(Set<LineItemDTO> lineItems) {
-		this.lineItems = lineItems;
-
-		if (this.lineItems != null) {
-			this.lineItems.forEach((lineItem) -> {
-				this.totalItemCount += lineItem.getCount();
-			});
-		}
-	}
-
-	public double getTotal() {
-		return total;
-	}
-
-	public void setTotal(double total) {
-		this.total = total;
-	}
-
-	public AddressDTO getLocation() {
-		return location;
-	}
-
-	public void setLocation(AddressDTO location) {
-		this.location = location;
-	}
-
-	public boolean isDelivered() {
-		return delivered;
-	}
-
-	public void setDelivered(boolean delivered) {
-		this.delivered = delivered;
-	}
-
-	public Date getDeliveredAt() {
-		return deliveredAt;
-	}
-
-	public void setDeliveredAt(Date deliveredAt) {
-		this.deliveredAt = deliveredAt;
-	}
-
-	public Date getCreatedAt() {
-		return createdAt;
-	}
-
-	public void setCreatedAt(Date createdAt) {
-		this.createdAt = createdAt;
-	}
-
-	public Date getUpdatedAt() {
-		return updatedAt;
-	}
-
-	public void setUpdatedAt(Date updatedAt) {
-		this.updatedAt = updatedAt;
-	}
-
-	public PaymentReadDTO getPayment() {
-		return payment;
-	}
-
-	public void setPayment(PaymentReadDTO payment) {
-		this.payment = payment;
-	}
-
-	public String getUid() {
-		return uid;
-	}
-
-	public void setUid(String uid) {
-		this.uid = uid;
-	}
-
-	public int getTotalItemCount() {
-		this.totalItemCount = 0;
-		if (this.lineItems != null) {
-			this.lineItems.forEach((lineItem) -> {
-				this.totalItemCount += lineItem.getCount();
-			});
-		}
-		return totalItemCount;
-	}
-
-	public boolean isPaid() {
-		return paid;
-	}
-
-	public void setPaid(boolean paid) {
-		this.paid = paid;
-	}
-
-	public Date getPaidAt() {
-		return paidAt;
-	}
-
-	public void setPaidAt(Date paidAt) {
-		this.paidAt = paidAt;
-	}
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
 }

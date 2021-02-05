@@ -41,20 +41,18 @@ public class ApiSession implements Serializable {
     private Set<String>       userRoles;
 
     // last time token was used
-    private Date              lastUsedTime;
+    private LocalDateTime              lastUsedTime;
 
     // expiration time
-    private Date              expiredTime;
+    private LocalDateTime              expiredTime;
 
     // userAgent
     private String            deviceId;
 
     private String            clientIPAddress;
 
-    public ApiSession extendLifeTimeOnRequest() {
-        // expire next 24 hours
-        this.setExpiredTime(DateUtils.addHours(new Date(), 24));
-        return this;
+    public String getRolesAsStr() {
+        return String.join(",", this.userRoles);
     }
 
 }

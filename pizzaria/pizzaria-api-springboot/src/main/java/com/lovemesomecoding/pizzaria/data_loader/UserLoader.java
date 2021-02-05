@@ -1,6 +1,7 @@
 package com.lovemesomecoding.pizzaria.data_loader;
 
 import java.time.Instant;
+import java.time.LocalDate;
 import java.util.Date;
 
 import javax.annotation.PostConstruct;
@@ -41,12 +42,12 @@ public class UserLoader implements CommandLineRunner{
         user.setFirstName("Folau");
         user.setLastName("Kaveinga");
         user.setStatus(UserStatus.ACTIVE);
-        user.setDateOfBirth(Date.from(Instant.parse("1986-08-15T07:00:00.00Z")));
+        user.setDateOfBirth(LocalDate.of(1986, 12, 03));
         user.setEmail("folaudev@gmail.com");
         user.setPhoneNumber("3109934731");
         user.setPassword(PasswordUtils.hashPassword("Test1234!"));
         user.setGender(UserGender.MALE);
-        user.setPasswordExpirationDate(DateUtils.addMonths(new Date(), 12));
+        user.setPasswordExpirationDate(LocalDate.now().plusYears(1));
         user.setMaritalStatus(UserMaritalStatus.MARRIED);
         user.setAboutMe("I am so cool you dont even know");
 
@@ -70,12 +71,12 @@ public class UserLoader implements CommandLineRunner{
         user.setFirstName("Lisa");
         user.setLastName("Kaveinga");
         user.setStatus(UserStatus.ACTIVE);
-        user.setDateOfBirth(Date.from(Instant.parse("1987-08-15T07:00:00.00Z")));
+        user.setDateOfBirth(LocalDate.of(1987, 12, 03));
         user.setEmail("folaudev+1@gmail.com");
         user.setPhoneNumber("3109934731");
         user.setPassword(PasswordUtils.hashPassword("Test1234!"));
         user.setGender(UserGender.MALE);
-        user.setPasswordExpirationDate(DateUtils.addMonths(new Date(), 12));
+        user.setPasswordExpirationDate(LocalDate.now().plusYears(1));
         user.setMaritalStatus(UserMaritalStatus.MARRIED);
         user.setAboutMe("I am so cool you dont even know");
 
@@ -97,12 +98,12 @@ public class UserLoader implements CommandLineRunner{
         user.setFirstName("Laulau");
         user.setLastName("Kaveinga");
         user.setStatus(UserStatus.ACTIVE);
-        user.setDateOfBirth(Date.from(Instant.parse("2011-08-15T07:00:00.00Z")));
+        user.setDateOfBirth(LocalDate.of(2011, 12, 03));
         user.setEmail("folaudev+2@gmail.com");
         user.setPhoneNumber("3109934731");
         user.setPassword(PasswordUtils.hashPassword("Test1234!"));
         user.setGender(UserGender.MALE);
-        user.setPasswordExpirationDate(DateUtils.addMonths(new Date(), 12));
+        user.setPasswordExpirationDate(LocalDate.now().plusYears(1));
         user.setMaritalStatus(UserMaritalStatus.SINGLE);
         user.setAboutMe("I am so cool you dont even know");
 
@@ -124,12 +125,12 @@ public class UserLoader implements CommandLineRunner{
         user.setFirstName("Kinga");
         user.setLastName("Kaveinga");
         user.setStatus(UserStatus.ACTIVE);
-        user.setDateOfBirth(Date.from(Instant.parse("2013-08-15T07:00:00.00Z")));
+        user.setDateOfBirth(LocalDate.of(2013, 12, 03));
         user.setEmail("folaudev+3@gmail.com");
         user.setPhoneNumber("3109934731");
         user.setPassword(PasswordUtils.hashPassword("Test1234!"));
         user.setGender(UserGender.MALE);
-        user.setPasswordExpirationDate(DateUtils.addMonths(new Date(), 12));
+        user.setPasswordExpirationDate(LocalDate.now().plusYears(1));
         user.setMaritalStatus(UserMaritalStatus.SINGLE);
         user.setAboutMe("I am so cool you dont even know");
 
@@ -152,12 +153,12 @@ public class UserLoader implements CommandLineRunner{
         user.setFirstName("Fusi");
         user.setLastName("Kaveinga");
         user.setStatus(UserStatus.ACTIVE);
-        user.setDateOfBirth(Date.from(Instant.parse("2015-08-15T07:00:00.00Z")));
+        user.setDateOfBirth(LocalDate.of(2015, 12, 03));
         user.setEmail("folaudev+4@gmail.com");
         user.setPhoneNumber("3109934731");
         user.setPassword(PasswordUtils.hashPassword("Test1234!"));
         user.setGender(UserGender.FEMALE);
-        user.setPasswordExpirationDate(DateUtils.addMonths(new Date(), 12));
+        user.setPasswordExpirationDate(LocalDate.now().plusYears(1));
         user.setMaritalStatus(UserMaritalStatus.SINGLE);
         user.setAboutMe("I am so cool you dont even know");
 
@@ -179,12 +180,12 @@ public class UserLoader implements CommandLineRunner{
         user.setFirstName("Mele");
         user.setLastName("Kaveinga");
         user.setStatus(UserStatus.ACTIVE);
-        user.setDateOfBirth(Date.from(Instant.parse("2020-08-15T07:00:00.00Z")));
+        user.setDateOfBirth(LocalDate.of(2020, 12, 03));
         user.setEmail("folaudev+5@gmail.com");
         user.setPhoneNumber("3109934731");
         user.setPassword(PasswordUtils.hashPassword("Test1234!"));
         user.setGender(UserGender.FEMALE);
-        user.setPasswordExpirationDate(DateUtils.addMonths(new Date(), 12));
+        user.setPasswordExpirationDate(LocalDate.now().plusYears(1));
         user.setMaritalStatus(UserMaritalStatus.SINGLE);
         user.setAboutMe("I am so cool you dont even know");
 

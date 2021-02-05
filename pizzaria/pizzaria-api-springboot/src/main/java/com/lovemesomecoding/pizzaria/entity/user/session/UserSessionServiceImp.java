@@ -1,21 +1,18 @@
 package com.lovemesomecoding.pizzaria.entity.user.session;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import com.lovemesomecoding.pizzaria.exception.ApiException;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Service
 public class UserSessionServiceImp implements UserSessionService {
-    private Logger                log = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     private UserSessionRepository userSessionRepository;
@@ -25,10 +22,15 @@ public class UserSessionServiceImp implements UserSessionService {
     }
 
     @Override
+    public void update(UserSession userSession) {
+        this.save(userSession);
+    }
+
+    @Override
     public boolean signIn(UserSession memberSession) {
         log.debug("signIn(..)");
         memberSession.setActive(true);
-        memberSession.setLoginTime(new Date());
+        memberSession.setLoginTime(LocalDateTime.now());
 
         memberSession = this.save(memberSession);
         return true;
@@ -40,7 +42,7 @@ public class UserSessionServiceImp implements UserSessionService {
         UserSession memberSession = userSessionRepository.findByAuthToken(authToken);
 
         if (memberSession != null && memberSession.getId() != null && memberSession.getId() > 0) {
-            memberSession.setLogoutTime(new Date());
+            memberSession.setLogoutTime(LocalDateTime.now());
             memberSession.setActive(false);
             this.save(memberSession);
             return true;
@@ -53,7 +55,7 @@ public class UserSessionServiceImp implements UserSessionService {
     public void expire(String authToken) {
         UserSession memberSession = userSessionRepository.findByAuthToken(authToken);
         if (memberSession != null && memberSession.getId() != null && memberSession.getId() > 0) {
-            memberSession.setExpired(new Date());
+            memberSession.setExpiredAt(LocalDateTime.now());
             memberSession.setActive(false);
             this.save(memberSession);
         }
@@ -82,4 +84,17 @@ public class UserSessionServiceImp implements UserSessionService {
         // TODO Auto-generated method stub
         return userSessionRepository.findByUserUuidAndActive(userUuid, true, pageable);
     }
+
+    @Override
+    public UserSession getLatestSessionByRefreshToken(String refreshToken) {
+        List<UserSession> userSessions = userSessionRepository.findByRefreshToken(refreshToken);
+
+        if (userSessions == null || userSessions.size() == 0) {
+            return null;
+        }
+        
+        return userSessions.stream().findFirst().get();
+
+    }
+
 }

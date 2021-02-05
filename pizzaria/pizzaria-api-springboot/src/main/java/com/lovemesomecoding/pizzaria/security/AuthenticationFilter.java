@@ -26,7 +26,7 @@ import java.util.TimeZone;
 import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 
 @Slf4j
-public class AuthorizationFilter extends OncePerRequestFilter {
+public class AuthenticationFilter extends OncePerRequestFilter {
 
     @Autowired
     private AuthenticationService authenticationService;
@@ -61,7 +61,7 @@ public class AuthorizationFilter extends OncePerRequestFilter {
 
         JwtPayload jwtPayload = jwtTokenService.getPayloadByToken(token);
 
-        boolean authorized = authenticationService.authorizeRequest(token, jwtPayload);
+        boolean authorized = authenticationService.authenticateRequest(token, jwtPayload);
 
         if (authorized == false) {
             return;

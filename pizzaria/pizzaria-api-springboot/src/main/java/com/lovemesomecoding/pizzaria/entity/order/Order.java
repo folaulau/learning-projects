@@ -1,6 +1,7 @@
 package com.lovemesomecoding.pizzaria.entity.order;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -114,31 +115,29 @@ public class Order implements Serializable {
     private boolean           current;
 
     @Column(name = "delivered_at")
-    private Date              deliveredAt;
+    private LocalDateTime              deliveredAt;
 
     @Type(type = "true_false")
     @Column(name = "deleted", nullable = false)
     private boolean           deleted;
 
     @Column(name = "deleted_at")
-    private Date              deletedAt;
+    private LocalDateTime              deletedAt;
 
     @Type(type = "true_false")
     @Column(name = "paid", nullable = false)
     private boolean           paid;
 
     @Column(name = "paid_at")
-    private Date              paidAt;
+    private LocalDateTime              paidAt;
 
     @CreationTimestamp
-    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "created_at", updatable = false, nullable = false)
-    private Date              createdAt;
+    private LocalDateTime              createdAt;
 
     @UpdateTimestamp
-    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "updated_at", updatable = true, nullable = false)
-    private Date              updatedAt;
+    private LocalDateTime              updatedAt;
 
     @Column(name = "total")
     private double            total;
@@ -171,7 +170,7 @@ public class Order implements Serializable {
     public void stampPayment(Payment payment) {
         this.payment = payment;
         this.paid = payment.getPaid();
-        this.paidAt = new Date();
+        this.paidAt = LocalDateTime.now();
     }
 
     public void addLineItem(LineItem lineItem) {

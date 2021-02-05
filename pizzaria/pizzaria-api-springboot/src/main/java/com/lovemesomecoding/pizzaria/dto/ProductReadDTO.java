@@ -1,6 +1,7 @@
 package com.lovemesomecoding.pizzaria.dto;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.Set;
 
@@ -56,9 +57,9 @@ public class ProductReadDTO implements Serializable {
 
     private boolean           deleted;
 
-    private Date              createdAt;
+    private LocalDateTime              createdAt;
 
-    private Date              updatedAt;
+    private LocalDateTime              updatedAt;
 
     public String getPriceAsString() {
         if (price != null) {

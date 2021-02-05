@@ -22,4 +22,7 @@ public interface UserSessionRepository extends JpaRepository<UserSession, Long> 
     Page<UserSession> findByUserIdAndActive(Long memberId, Boolean active, Pageable pageable);
 
     UserSession findByAuthToken(String authtoken);
+    
+    List<UserSession> findByRefreshToken(String refreshToken);
+    
 }

@@ -2,6 +2,7 @@ package com.lovemesomecoding.pizzaria.entity.user;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -50,7 +51,7 @@ public class UserServiceImp implements UserService {
 
         // save email as lowercase
         user.setEmail(signUpDTO.getEmail().toLowerCase());
-        user.setPasswordExpirationDate(DateUtils.addYears(new Date(), 1));
+        user.setPasswordExpirationDate(LocalDate.now());
         user.setPassword(PasswordUtils.hashPassword(user.getPassword()));
         user.setStatus(UserStatus.ACTIVE);
         user.addRole(new Role(Authority.USER));
@@ -138,6 +139,12 @@ public class UserServiceImp implements UserService {
         UserDTO userDTO = entityMapper.mapUserToUserDTO(user);
 
         return userDTO;
+    }
+
+    @Override
+    public AuthenticationResponseDTO freshToken(String refreshToken) {
+        // TODO Auto-generated method stub
+        return authenticationService.refreshAuthToken(refreshToken);
     }
 
 }

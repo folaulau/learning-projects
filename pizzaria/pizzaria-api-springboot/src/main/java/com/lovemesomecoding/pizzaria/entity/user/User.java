@@ -1,9 +1,9 @@
 package com.lovemesomecoding.pizzaria.entity.user;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
@@ -26,21 +27,24 @@ import javax.persistence.OneToOne;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 import javax.validation.constraints.NotEmpty;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.ResultCheckStyle;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.annotations.Where;
+import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.LastModifiedBy;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.lovemesomecoding.pizzaria.dto.helper.ApiSession;
 import com.lovemesomecoding.pizzaria.entity.address.Address;
 import com.lovemesomecoding.pizzaria.entity.user.role.Role;
+import com.lovemesomecoding.pizzaria.utils.ApiSessionUtils;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -54,6 +58,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor
 @JsonInclude(value = Include.NON_NULL)
+@DynamicUpdate
 @Entity
 @SQLDelete(sql = "UPDATE user SET deleted = 'T' WHERE id = ?", check = ResultCheckStyle.NONE)
 @Where(clause = "deleted = 'F'")
@@ -98,9 +103,8 @@ public class User implements Serializable {
     @Column(name = "phone_verified")
     private Boolean           phoneVerified;
 
-    @Temporal(TemporalType.DATE)
     @Column(name = "date_of_birth")
-    private Date              dateOfBirth;
+    private LocalDate         dateOfBirth;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "marital_status")
@@ -118,18 +122,14 @@ public class User implements Serializable {
     @Column(name = "about_me")
     private String            aboutMe;
 
-    @Column(name = "profile_image_url")
-    private String            profileImageUrl;
-
-    @Column(name = "cover_image_url")
-    private String            coverImageUrl;
-
     @Column(name = "payment_gateway_id")
     private String            paymentGatewayId;
 
-    @Temporal(TemporalType.DATE)
-    @Column(name = "password_expiration_date", nullable = false, updatable = true)
-    private Date              passwordExpirationDate;
+    @Column(name = "profile_image_url")
+    private String            profileImageUrl;
+
+    @Column(name = "password_expiration_date")
+    private LocalDate         passwordExpirationDate;
 
     @Column(name = "invalid_password_counter")
     private Integer           invalidPasswordCounter = 0;
@@ -148,14 +148,22 @@ public class User implements Serializable {
     private boolean           deleted;
 
     @CreationTimestamp
-    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "created_at", nullable = false, updatable = false)
-    private Date              createdAt;
+    private LocalDateTime     createdAt;
 
     @UpdateTimestamp
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "updated_at", nullable = false, updatable = true)
-    private Date              updatedAt;
+    @Column(name = "updated_at", nullable = false)
+    private LocalDateTime     updatedAt;
+
+    /*
+     * uuid of the user updating this user
+     */
+    @LastModifiedBy
+    @Column(name = "updated_user")
+    private String            lastUpdatedByUser;
+
+    @Column(name = "updated_by_type")
+    private String            updatedByUserType;
 
     public User(long id) {
         this.id = id;
@@ -182,11 +190,30 @@ public class User implements Serializable {
         if (this.uuid == null || this.uuid.isEmpty()) {
             this.uuid = "user-" + UUID.randomUUID().toString();
         }
+
+        ApiSession currentUser = ApiSessionUtils.getApiSession();
+
+        if (currentUser != null) {
+            this.lastUpdatedByUser = currentUser.getUserUuid();
+            this.updatedByUserType = currentUser.getRolesAsStr();
+        } else {
+            this.lastUpdatedByUser = "SYSTEM";
+            this.updatedByUserType = "SYSTEM";
+        }
+
     }
 
     @PreUpdate
     private void preUpdate() {
+        ApiSession currentUser = ApiSessionUtils.getApiSession();
 
+        if (currentUser != null) {
+            this.lastUpdatedByUser = currentUser.getUserUuid();
+            this.updatedByUserType = currentUser.getRolesAsStr();
+        } else {
+            this.lastUpdatedByUser = "SYSTEM";
+            this.updatedByUserType = "SYSTEM";
+        }
     }
 
 }

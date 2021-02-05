@@ -22,7 +22,7 @@ import org.springframework.security.web.context.NullSecurityContextRepository;
 import org.springframework.security.web.context.SecurityContextPersistenceFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
-import com.lovemesomecoding.pizzaria.security.AuthorizationFilter;
+import com.lovemesomecoding.pizzaria.security.AuthenticationFilter;
 import com.lovemesomecoding.pizzaria.security.CustomAcccessDeniedHandler;
 import com.lovemesomecoding.pizzaria.security.CustomAuthenticationProvider;
 import com.lovemesomecoding.pizzaria.security.CustomLoginFilter;
@@ -58,13 +58,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
-    public AuthorizationFilter authorizationFilter() {
-        return new AuthorizationFilter();
+    public AuthenticationFilter authorizationFilter() {
+        return new AuthenticationFilter();
     }
 
     @Bean
-    public RegistrationBean jwtAuthFilterRegister(AuthorizationFilter customAuthenticationFilter) {
-        FilterRegistrationBean<AuthorizationFilter> registrationBean = new FilterRegistrationBean<>(customAuthenticationFilter);
+    public RegistrationBean jwtAuthFilterRegister(AuthenticationFilter customAuthenticationFilter) {
+        FilterRegistrationBean<AuthenticationFilter> registrationBean = new FilterRegistrationBean<>(customAuthenticationFilter);
         registrationBean.setEnabled(false);
         return registrationBean;
     }

@@ -5,6 +5,8 @@ import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import com.lovemesomecoding.pizzaria.dto.AuthenticationResponseDTO;
+
 public interface UserSessionService {
 
     boolean signIn(UserSession userSession);
@@ -22,4 +24,8 @@ public interface UserSessionService {
 
     // Get logged in sessions
     Page<UserSession> getActiveSessionsByUserUuid(String userUuid, Pageable pageable);
+
+    UserSession getLatestSessionByRefreshToken(String refreshToken);
+
+    void update(UserSession userSession);
 }

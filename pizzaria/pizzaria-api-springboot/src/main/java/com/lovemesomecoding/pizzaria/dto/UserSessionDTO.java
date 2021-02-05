@@ -1,6 +1,7 @@
 package com.lovemesomecoding.pizzaria.dto;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.Date;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
@@ -52,11 +53,11 @@ public class UserSessionDTO implements Serializable {
 
     private Double            lng;
 
-    private Date              loginTime;
+    private LocalDateTime              loginTime;
 
-    private Date              logoutTime;
+    private LocalDateTime              logoutTime;
 
-    private Date              expired;
+    private LocalDateTime              expired;
 
     private Boolean           active;
 }

@@ -32,6 +32,8 @@ public class AuthenticationResponseDTO implements Serializable {
      */
     private String            token;
 
+    private String            refreshToken;
+
     private Long              id;
 
     private String            uuid;
@@ -49,7 +51,5 @@ public class AuthenticationResponseDTO implements Serializable {
     private AddressDTO        address;
 
     private String            profileImageUrl;
-    
-    private String            coverImageUrl;
 
 }

@@ -1,12 +1,12 @@
 package com.lovemesomecoding.pizzaria.dto;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.lovemesomecoding.pizzaria.entity.user.UserGender;
-import com.lovemesomecoding.pizzaria.entity.user.UserMaritalStatus;
 import com.lovemesomecoding.pizzaria.entity.user.UserStatus;
 
 import lombok.AllArgsConstructor;
@@ -43,7 +43,7 @@ public class UserDTO implements Serializable {
 
     private Boolean           phoneVerified;
 
-    private Date              dateOfBirth;
+    private LocalDate              dateOfBirth;
 
     private UserStatus        status;
 
@@ -53,7 +53,7 @@ public class UserDTO implements Serializable {
 
     private String            coverImageUrl;
 
-    private Date              passwordExpirationDate;
+    private LocalDate              passwordExpirationDate;
 
     private Integer           invalidPasswordCounter = 0;
 
@@ -63,9 +63,9 @@ public class UserDTO implements Serializable {
 
     private boolean           deleted;
 
-    private Date              createdAt;
+    private LocalDateTime              createdAt;
 
-    private Date              updatedAt;
+    private LocalDateTime              updatedAt;
 
     private Long              createdBy;
 

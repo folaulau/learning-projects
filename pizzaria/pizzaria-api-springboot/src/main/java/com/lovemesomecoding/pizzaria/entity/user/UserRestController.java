@@ -34,6 +34,7 @@ import com.lovemesomecoding.pizzaria.dto.UserUpdateDTO;
 import com.lovemesomecoding.pizzaria.entity.user.session.UserSession;
 import com.lovemesomecoding.pizzaria.entity.user.session.UserSessionService;
 import com.lovemesomecoding.pizzaria.exception.ApiException;
+import com.lovemesomecoding.pizzaria.security.AuthenticationType;
 import com.lovemesomecoding.pizzaria.utils.ObjMapperUtils;
 
 import io.swagger.annotations.Api;
@@ -60,8 +61,8 @@ public class UserRestController {
      */
     @ApiOperation(value = "Sign Up", notes = "${user.rest.controller.signup}")
     @PostMapping(value = "/users/signup")
-    public ResponseEntity<AuthenticationResponseDTO> signUp(@RequestHeader(name = "x-api-key", required = true) String xApiKey,
-            @ApiParam(name = "user", value = "user sign up dto", required = true) @Valid @RequestBody SignUpDTO signUpDTO) {
+    public ResponseEntity<AuthenticationResponseDTO> signUp(@RequestHeader(name = "client-id", required = true) String clientId,
+            @ApiParam(name = "user", value = "user sign up", required = true) @RequestBody SignUpDTO signUpDTO) {
         log.info("sign up {}", ObjMapperUtils.toJson(signUpDTO));
 
         AuthenticationResponseDTO userAuthenticationSuccessDTO = userService.signUp(signUpDTO);
@@ -74,10 +75,20 @@ public class UserRestController {
      */
     @ApiOperation(value = "Log In")
     @PostMapping(value = "/users/login")
-    public ResponseEntity<AuthenticationResponseDTO> login(@RequestHeader(name = "x-api-key", required = true) String xApiKey, @RequestParam(name = "type", required = true) String loginType,
+    public ResponseEntity<AuthenticationResponseDTO> login(@RequestHeader(name = "client-id", required = true) String clientId, @RequestParam(name = "type", required = true) String loginType,
             @RequestHeader(name = "Authorization", required = true) String authorization) {
         log.info("login authorization={}", ObjMapperUtils.toJson(authorization));
         return new ResponseEntity<>(OK);
+    }
+
+    @ApiOperation(value = "Refresh auth token")
+    @PostMapping(value = "/users/token/refresh")
+    public ResponseEntity<AuthenticationResponseDTO> refreshToken(@RequestHeader(name = "client-id", required = true) String clientId,
+            @RequestParam(name = "refreshToken", required = true) String refreshToken) {
+        log.info("refreshToken={}", ObjMapperUtils.toJson(refreshToken));
+        AuthenticationResponseDTO newAuth = userService.freshToken(refreshToken);
+        log.info("newAuth={}", ObjMapperUtils.toJson(newAuth));
+        return new ResponseEntity<>(newAuth, OK);
     }
 
     @ApiOperation(value = "Get User")

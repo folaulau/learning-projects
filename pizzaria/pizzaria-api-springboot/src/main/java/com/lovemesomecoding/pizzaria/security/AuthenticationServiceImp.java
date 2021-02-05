@@ -12,9 +12,11 @@ import com.lovemesomecoding.pizzaria.dto.AuthenticationResponseDTO;
 import com.lovemesomecoding.pizzaria.dto.EntityDTOMapper;
 import com.lovemesomecoding.pizzaria.dto.helper.ApiSession;
 import com.lovemesomecoding.pizzaria.entity.user.User;
+import com.lovemesomecoding.pizzaria.entity.user.UserDAO;
 import com.lovemesomecoding.pizzaria.entity.user.session.UserSession;
 import com.lovemesomecoding.pizzaria.entity.user.session.UserSessionService;
 import com.lovemesomecoding.pizzaria.exception.ApiErrorResponse;
+import com.lovemesomecoding.pizzaria.exception.ApiException;
 import com.lovemesomecoding.pizzaria.security.jwt.JwtPayload;
 import com.lovemesomecoding.pizzaria.security.jwt.JwtTokenService;
 import com.lovemesomecoding.pizzaria.utils.ApiSessionUtils;
@@ -27,9 +29,11 @@ import lombok.extern.slf4j.Slf4j;
 import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Optional;
+import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -49,12 +53,15 @@ public class AuthenticationServiceImp implements AuthenticationService {
 
     @Autowired
     private CacheService        cacheService;
-    
+
     @Autowired
-    private JwtTokenService jwtTokenService;
+    private JwtTokenService     jwtTokenService;
 
     @Autowired
     private UserSessionService  userSessionService;
+
+    @Autowired
+    private UserDAO             userDAO;
 
     @Override
     public AuthenticationResponseDTO authenticate(User user) {
@@ -63,9 +70,11 @@ public class AuthenticationServiceImp implements AuthenticationService {
         String userIPAddress = HttpUtils.getRequestIP(request);
 
         String jwtToken = jwtTokenService.generateToken(new JwtPayload(RandomGeneratorUtils.getJWTId(), user.getUuid()));
+        String refreshToken = "ref-token-" + UUID.randomUUID().toString();
 
         AuthenticationResponseDTO authenticatedSessionDTO = entityMapper.mapUserToUserAuthSuccessDTO(user);
         authenticatedSessionDTO.setToken(jwtToken);
+        authenticatedSessionDTO.setRefreshToken(refreshToken);
 
         ApiSession apiSession = new ApiSession();
         apiSession.setToken(jwtToken);
@@ -73,10 +82,10 @@ public class AuthenticationServiceImp implements AuthenticationService {
         apiSession.setUserUuid(user.getUuid());
         apiSession.setUserRoles(user.generateStrRoles());
         apiSession.setClientIPAddress(userIPAddress);
-        apiSession.setLastUsedTime(new Date());
+        apiSession.setLastUsedTime(LocalDateTime.now());
 
         // next 24 hours
-        apiSession.setExpiredTime(DateUtils.addHours(new Date(), 24));
+        apiSession.setExpiredTime(LocalDateTime.now().plusDays(1));
         apiSession.setDeviceId(userAgent);
 
         cacheService.addUpdate(jwtToken, apiSession);
@@ -85,8 +94,9 @@ public class AuthenticationServiceImp implements AuthenticationService {
         userSession.setUserId(user.getId());
         userSession.setUserUuid(user.getUuid());
         userSession.setAuthToken(jwtToken);
-        userSession.setLoginTime(new Date());
+        userSession.setLoginTime(LocalDateTime.now());
         userSession.setUserAgent(userAgent);
+        userSession.setRefreshToken(refreshToken);
 
         userSessionService.signIn(userSession);
 
@@ -106,7 +116,7 @@ public class AuthenticationServiceImp implements AuthenticationService {
             boolean signOutInDB = userSessionService.signOut(token);
 
             log.debug("signOutInDB={}", signOutInDB);
-            
+
             return deleteCount > 0;
         } else {
             return false;
@@ -115,7 +125,7 @@ public class AuthenticationServiceImp implements AuthenticationService {
     }
 
     @Override
-    public boolean authorizeRequest(String token, JwtPayload jwtPayload) {
+    public boolean authenticateRequest(String token, JwtPayload jwtPayload) {
 
         log.debug("jwtPayload={}", ObjMapperUtils.toJson(jwtPayload));
 
@@ -159,10 +169,10 @@ public class AuthenticationServiceImp implements AuthenticationService {
             log.warn("Device id or user-agent does not match the request user-agent");
         }
 
-        log.debug("expiredTime={}, now={}", apiSession.getExpiredTime().toInstant().toString(), new Date().toInstant().toString());
+        log.debug("expiredTime={}, now={}", apiSession.getExpiredTime().toString(), new Date().toInstant().toString());
 
         // is now after the expiration time?
-        if (new Date().after(apiSession.getExpiredTime())) {
+        if (LocalDateTime.now().isAfter(apiSession.getExpiredTime())) {
             response.setContentType(MediaType.APPLICATION_JSON_VALUE);
             response.setStatus(UNAUTHORIZED.value());
 
@@ -172,7 +182,7 @@ public class AuthenticationServiceImp implements AuthenticationService {
             try {
                 ObjMapperUtils.getObjectMapper()
                         .writeValue(response.getWriter(),
-                                new ApiErrorResponse(UNAUTHORIZED, "Access Denied", message, "Token has been expired. expired at " + apiSession.getExpiredTime().toInstant().toString()));
+                                new ApiErrorResponse(UNAUTHORIZED, "Access Denied", message, "Token has been expired. expired at " + apiSession.getExpiredTime().toString()));
             } catch (IOException e) {
                 log.warn("IOException, msg={}", e.getLocalizedMessage());
             }
@@ -183,12 +193,67 @@ public class AuthenticationServiceImp implements AuthenticationService {
         /*
          * Valid token
          */
-        apiSession = apiSession.extendLifeTimeOnRequest();
-        cacheService.addUpdate(token, apiSession);
 
         ApiSessionUtils.setSessionToken(new WebAuthenticationDetailsSource().buildDetails(request), apiSession);
 
         return true;
+    }
+
+    @Override
+    public AuthenticationResponseDTO refreshAuthToken(String refreshToken) {
+        // TODO Auto-generated method stub
+
+        UserSession userSession = userSessionService.getLatestSessionByRefreshToken(refreshToken);
+
+        if (userSession == null) {
+            throw new ApiException("Refresh token not found");
+        }
+
+        if (userSession.getActive() != null && userSession.getActive().equals(false) && userSession.getLogoutTime() != null) {
+            throw new ApiException("Refresh token has been logged out");
+        }
+
+        User user = userDAO.getByUuid(userSession.getUserUuid());
+
+        log.info("user={}", ObjMapperUtils.toJson(user));
+
+        String jwtToken = jwtTokenService.generateToken(new JwtPayload(RandomGeneratorUtils.getJWTId(), user.getUuid()));
+
+        AuthenticationResponseDTO authenticatedSessionDTO = entityMapper.mapUserToUserAuthSuccessDTO(user);
+        authenticatedSessionDTO.setToken(jwtToken);
+        authenticatedSessionDTO.setRefreshToken(refreshToken);
+
+        /**
+         * Delete old token
+         */
+
+        cacheService.delete(userSession.getAuthToken());
+
+        /**
+         * Create new token
+         */
+        String userAgent = HttpUtils.getRequestUserAgent(request);
+        String userIPAddress = HttpUtils.getRequestIP(request);
+
+        ApiSession apiSession = new ApiSession();
+        apiSession.setToken(jwtToken);
+        apiSession.setUserId(user.getId());
+        apiSession.setUserUuid(user.getUuid());
+        apiSession.setUserRoles(user.generateStrRoles());
+        apiSession.setClientIPAddress(userIPAddress);
+        apiSession.setLastUsedTime(LocalDateTime.now());
+
+        // next 24 hours
+        apiSession.setExpiredTime(LocalDateTime.now().plusDays(1));
+        apiSession.setDeviceId(userAgent);
+
+        cacheService.addUpdate(jwtToken, apiSession);
+        
+        // use the new auth token
+        userSession.setAuthToken(jwtToken);
+        this.userSessionService.update(userSession);
+
+        return authenticatedSessionDTO;
     }
 
 }

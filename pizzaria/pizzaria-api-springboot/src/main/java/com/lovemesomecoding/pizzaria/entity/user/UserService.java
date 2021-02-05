@@ -22,4 +22,6 @@ public interface UserService {
 
     UserDTO updateCoverImage(String uuid, MultipartFile file);
 
+    AuthenticationResponseDTO freshToken(String refreshToken);
+
 }

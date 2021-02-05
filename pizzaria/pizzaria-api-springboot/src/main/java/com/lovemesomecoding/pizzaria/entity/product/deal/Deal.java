@@ -1,6 +1,7 @@
 package com.lovemesomecoding.pizzaria.entity.product.deal;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -91,18 +92,16 @@ public class Deal implements Serializable {
     @Column(name = "deleted", nullable = false)
     private boolean           deleted;
 
-    @CreationTimestamp
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "created_at", updatable = false, nullable = false)
-    private Date              createdAt;
-
     @Column(name = "created_by", updatable = false, nullable = false)
     private Long              createdBy;
+    
+    @CreationTimestamp
+    @Column(name = "created_at", updatable = false, nullable = false)
+    private LocalDateTime              createdAt;
 
     @UpdateTimestamp
-    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "updated_at", updatable = true, nullable = false)
-    private Date              updatedAt;
+    private LocalDateTime              updatedAt;
 
     public void addProduct(Product product) {
         if (this.products == null) {

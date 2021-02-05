@@ -1,6 +1,7 @@
 package com.lovemesomecoding.pizzaria.dto;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -33,7 +34,7 @@ public class UserUpdateDTO implements Serializable {
 
     private String            phoneNumber;
 
-    private Date              dateOfBirth;
+    private LocalDate              dateOfBirth;
 
     private UserGender        gender;
 

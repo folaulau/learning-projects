@@ -10,6 +10,8 @@ public interface AuthenticationService {
 
     boolean logOutUser(String token);
 
-    boolean authorizeRequest(String token, JwtPayload jwtPayload);
+    boolean authenticateRequest(String token, JwtPayload jwtPayload);
+
+    AuthenticationResponseDTO refreshAuthToken(String refreshToken);
 
 }

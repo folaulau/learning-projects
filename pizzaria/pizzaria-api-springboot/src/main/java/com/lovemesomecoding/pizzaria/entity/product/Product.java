@@ -1,6 +1,7 @@
 package com.lovemesomecoding.pizzaria.entity.product;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.Set;
 import java.util.UUID;
@@ -114,17 +115,15 @@ public class Product implements Serializable {
     private boolean           deleted;
 
     @CreationTimestamp
-    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "created_at", updatable = false, nullable = false)
-    private Date              createdAt;
+    private LocalDateTime              createdAt;
 
     @Column(name = "created_by", updatable = false, nullable = false)
     private Long              createdBy;
 
     @UpdateTimestamp
-    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "updated_at", updatable = true, nullable = false)
-    private Date              updatedAt;
+    private LocalDateTime              updatedAt;
     
     
     public Product(long id) {

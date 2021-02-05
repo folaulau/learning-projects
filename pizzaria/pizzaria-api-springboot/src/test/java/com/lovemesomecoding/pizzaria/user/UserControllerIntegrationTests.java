@@ -1,6 +1,7 @@
 package com.lovemesomecoding.pizzaria.user;
 
 import java.time.Instant;
+import java.time.LocalDate;
 import java.util.Date;
 import javax.annotation.Resource;
 import javax.servlet.Filter;
@@ -65,7 +66,7 @@ public class UserControllerIntegrationTests {
         jwtPayload.setSub("user-33cdbbdd-75ed-44e3-8007-db8b7b8c3808");
 
         Mockito.when(jwtTokenService.getPayloadByToken(Mockito.anyString())).thenReturn(jwtPayload);
-        Mockito.when(authenticationService.authorizeRequest(Mockito.anyString(), Mockito.any())).thenReturn(true);
+        Mockito.when(authenticationService.authenticateRequest(Mockito.anyString(), Mockito.any())).thenReturn(true);
         
         User user = new User();
         user.setId(1L);
@@ -73,12 +74,12 @@ public class UserControllerIntegrationTests {
         user.setFirstName("Folau");
         user.setLastName("Kaveinga");
         user.setStatus(UserStatus.ACTIVE);
-        user.setDateOfBirth(Date.from(Instant.parse("1986-08-15T07:00:00.00Z")));
+        user.setDateOfBirth(LocalDate.of(1986, 12, 03));
         user.setEmail("folaudev@gmail.com");
         user.setPhoneNumber("3109934731");
         user.setPassword(PasswordUtils.hashPassword("Test1234!"));
         user.setGender(UserGender.MALE);
-        user.setPasswordExpirationDate(DateUtils.addMonths(new Date(), 12));
+        user.setPasswordExpirationDate(LocalDate.now().plusYears(1));
         user.setMaritalStatus(UserMaritalStatus.MARRIED);
         user.setAboutMe("I am so cool you dont even know");
         
